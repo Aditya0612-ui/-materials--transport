@@ -327,6 +327,89 @@
     font-size: 1rem !important;
   }
 
+  /* === LOGIN PAGE MOBILE === */
+  .simple-login-page {
+    padding: 0 !important;
+    min-height: 100vh !important;
+  }
+
+  .simple-login-page .container {
+    padding: 1rem !important;
+  }
+
+  .simple-login-page .row {
+    min-height: 100vh !important;
+  }
+
+  .login-card {
+    border-radius: 12px !important;
+    margin: 0 !important;
+    width: 100% !important;
+  }
+
+  .login-card .card-body {
+    padding: 1.5rem !important;
+  }
+
+  .logo-icon i {
+    font-size: 48px !important;
+  }
+
+  .login-title {
+    font-size: 1.25rem !important;
+    line-height: 1.4 !important;
+  }
+
+  .login-subtitle {
+    font-size: 0.85rem !important;
+  }
+
+  .login-input,
+  .login-input-icon {
+    min-height: 48px !important;
+    font-size: 16px !important;
+  }
+
+  .password-toggle-btn {
+    min-height: 48px !important;
+    min-width: 48px !important;
+    padding: 0.5rem !important;
+  }
+
+  .email-login-btn,
+  .google-login-btn {
+    min-height: 52px !important;
+    font-size: 1rem !important;
+    padding: 0.875rem 1.25rem !important;
+    border-radius: 10px !important;
+  }
+
+  .login-divider {
+    margin: 1.25rem 0 !important;
+  }
+
+  .login-divider span {
+    font-size: 0.8rem !important;
+    padding: 0 0.75rem !important;
+  }
+
+  /* Login form groups spacing */
+  .simple-login-page .form-group,
+  .simple-login-page .mb-3 {
+    margin-bottom: 1rem !important;
+  }
+
+  .simple-login-page .mb-4 {
+    margin-bottom: 1.25rem !important;
+  }
+
+  /* Alert in login page */
+  .simple-login-page .alert {
+    font-size: 0.875rem !important;
+    padding: 0.75rem !important;
+    border-radius: 8px !important;
+  }
+
   /* === MODALS === */
   .modal-dialog {
     margin: 0 !important;
@@ -580,6 +663,34 @@
     font-size: 0.8rem !important;
   }
 
+  /* Login page on small screens */
+  .login-card .card-body {
+    padding: 1.25rem !important;
+  }
+
+  .logo-icon i {
+    font-size: 40px !important;
+  }
+
+  .login-title {
+    font-size: 1.1rem !important;
+  }
+
+  .login-subtitle {
+    font-size: 0.8rem !important;
+  }
+
+  .email-login-btn,
+  .google-login-btn {
+    min-height: 48px !important;
+    font-size: 0.95rem !important;
+    padding: 0.75rem 1rem !important;
+  }
+
+  .login-divider {
+    margin: 1rem 0 !important;
+  }
+
   /* Smaller modals */
   .modal-header {
     padding: 0.75rem !important;
@@ -617,6 +728,20 @@
 
   .modal-body {
     max-height: calc(100vh - 120px);
+  }
+
+  /* Login page in landscape */
+  .simple-login-page .row {
+    min-height: 100vh !important;
+  }
+
+  .login-card {
+    max-height: 95vh !important;
+    overflow-y: auto !important;
+  }
+
+  .login-card .card-body {
+    padding: 1.25rem !important;
   }
 }
 

@@ -202,11 +202,7 @@ const LoginPage = () => {
                   </Button>
                 </div>
 
-                <div className="text-center mt-4">
-                  <small className="text-muted">
-                    Secure authentication powered by Firebase
-                  </small>
-                </div>
+
               </Card.Body>
             </Card>
           </Col>
