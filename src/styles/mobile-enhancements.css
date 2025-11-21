@@ -351,17 +351,28 @@
 
   .modal-body {
     padding: 1rem !important;
+    padding-bottom: 80px !important; /* Extra space for sticky footer */
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    max-height: calc(100vh - 140px) !important;
   }
 
   .modal-footer {
     padding: 1rem !important;
     border-radius: 0 !important;
+    position: sticky !important;
+    bottom: 0 !important;
+    background: white !important;
+    border-top: 1px solid #dee2e6 !important;
+    z-index: 1055 !important;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1) !important;
+    display: flex !important;
+    gap: 0.5rem !important;
   }
 
   .modal-footer .btn {
-    flex: 1;
+    flex: 1 !important;
+    margin: 0 !important;
   }
 
   /* === DROPDOWNS === */
@@ -576,10 +587,14 @@
 
   .modal-body {
     padding: 0.75rem !important;
+    padding-bottom: 70px !important; /* Extra space for sticky footer */
   }
 
   .modal-footer {
     padding: 0.75rem !important;
+    position: sticky !important;
+    bottom: 0 !important;
+    background: white !important;
   }
 }
 
@@ -650,6 +665,10 @@
 
     .modal-content {
       padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .modal-footer {
+      padding-bottom: max(1rem, env(safe-area-inset-bottom)) !important;
     }
   }
 }
