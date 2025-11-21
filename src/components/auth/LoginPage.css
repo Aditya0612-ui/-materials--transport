@@ -1,0 +1,191 @@
+/* Simple Login Page Styles */
+
+.simple-login-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  padding: 2rem 0;
+}
+
+.login-card {
+  border: none;
+  border-radius: 16px;
+  background: white;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+}
+
+.login-card .card-body {
+  border-radius: 16px;
+}
+
+.login-title {
+  color: #065f46;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+}
+
+.login-subtitle {
+  font-size: 0.95rem;
+  margin-bottom: 0;
+}
+
+/* Google Login Button */
+.google-login-btn {
+  border-color: #dc2626;
+  color: #dc2626;
+  border-radius: 12px;
+  padding: 0.875rem 1.5rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  border-width: 2px;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.google-login-btn:hover:not(:disabled) {
+  background: #dc2626;
+  border-color: #dc2626;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(220, 38, 38, 0.3);
+}
+
+.google-login-btn:focus {
+  box-shadow: 0 0 0 0.2rem rgba(220, 38, 38, 0.25);
+}
+
+.google-login-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Logo Icon */
+.logo-icon {
+  display: inline-block;
+}
+
+/* Email Login Form */
+.login-label {
+  color: #374151;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+}
+
+.login-input-icon {
+  background: #f9fafb;
+  border-color: #d1d5db;
+  color: #6b7280;
+}
+
+.login-input {
+  border-color: #d1d5db;
+  font-size: 16px; /* Prevents zoom on iOS */
+  min-height: 44px;
+}
+
+.login-input:focus {
+  border-color: #065f46;
+  box-shadow: 0 0 0 0.2rem rgba(6, 95, 70, 0.25);
+}
+
+.password-toggle-btn {
+  border-color: #d1d5db;
+  color: #6b7280;
+  background: #f9fafb;
+}
+
+.password-toggle-btn:hover:not(:disabled) {
+  background: #e5e7eb;
+  border-color: #9ca3af;
+  color: #374151;
+}
+
+/* Email Login Button */
+.email-login-btn {
+  background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+  border: none;
+  border-radius: 12px;
+  padding: 0.875rem 1.5rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.email-login-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(6, 95, 70, 0.3);
+}
+
+.email-login-btn:focus {
+  box-shadow: 0 0 0 0.2rem rgba(6, 95, 70, 0.25);
+}
+
+.email-login-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Login Divider */
+.login-divider {
+  position: relative;
+  text-align: center;
+  margin: 1.5rem 0;
+}
+
+.login-divider hr {
+  border-top: 1px solid #e5e7eb;
+  margin: 0;
+}
+
+.login-divider span {
+  background: white;
+  color: #6b7280;
+  padding: 0 1rem;
+  font-size: 0.875rem;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .simple-login-page {
+    padding: 1rem 0;
+  }
+  
+  .login-card .card-body {
+    padding: 2rem !important;
+  }
+  
+  .login-title {
+    font-size: 1.25rem;
+  }
+  
+  .google-login-btn,
+  .email-login-btn {
+    padding: 0.75rem 1.25rem;
+    min-height: 50px;
+  }
+  
+  .login-divider {
+    margin: 1rem 0;
+  }
+  
+  .login-divider span {
+    font-size: 0.8rem;
+    padding: 0 0.75rem;
+  }
+}

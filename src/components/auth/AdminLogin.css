@@ -1,0 +1,384 @@
+/* Admin Login Modal Styles */
+.admin-login-modal .modal-content {
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+.admin-login-header {
+  background: linear-gradient(135deg, #065f46 0%, #047857 50%, #059669 100%);
+  color: white;
+  border-bottom: none;
+  padding: 1.5rem;
+}
+
+.admin-login-header .modal-title {
+  font-weight: 600;
+  font-size: 1.25rem;
+}
+
+.admin-login-header .btn-close {
+  filter: brightness(0) invert(1);
+  opacity: 0.8;
+}
+
+.admin-login-header .btn-close:hover {
+  opacity: 1;
+}
+
+.admin-icon-wrapper {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-login-body {
+  padding: 2rem;
+  background: #f8fafc;
+}
+
+.admin-label {
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.admin-input-icon {
+  background: #e5e7eb;
+  border: 1px solid #d1d5db;
+  color: #6b7280;
+}
+
+.admin-input {
+  border: 1px solid #d1d5db;
+  border-radius: 0 8px 8px 0;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.admin-input:focus {
+  border-color: #047857;
+  box-shadow: 0 0 0 0.2rem rgba(4, 120, 87, 0.25);
+}
+
+.admin-password-toggle {
+  border: 1px solid #d1d5db;
+  border-left: none;
+  border-radius: 0 8px 8px 0;
+  background: #f9fafb;
+  color: #6b7280;
+}
+
+.admin-password-toggle:hover {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.admin-checkbox {
+  margin-bottom: 0;
+}
+
+.admin-checkbox .form-check-input:checked {
+  background-color: #047857;
+  border-color: #047857;
+}
+
+.admin-checkbox .form-check-input:focus {
+  box-shadow: 0 0 0 0.2rem rgba(4, 120, 87, 0.25);
+}
+
+.admin-login-btn {
+  background: linear-gradient(135deg, #065f46 0%, #047857 50%, #059669 100%);
+  border: none;
+  border-radius: 10px;
+  padding: 0.875rem 1.5rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(4, 120, 87, 0.3);
+}
+
+.admin-login-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(4, 120, 87, 0.4);
+}
+
+.admin-login-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.admin-demo-btn {
+  border-color: #3b82f6;
+  color: #3b82f6;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.admin-demo-btn:hover:not(:disabled) {
+  background: #3b82f6;
+  border-color: #3b82f6;
+  color: white;
+  transform: translateY(-1px);
+}
+
+.admin-alert {
+  border-radius: 10px;
+  border: none;
+  font-weight: 500;
+}
+
+.admin-alert.alert-success {
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+  color: #065f46;
+  border-left: 4px solid #10b981;
+}
+
+.admin-alert.alert-danger {
+  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+  color: #991b1b;
+  border-left: 4px solid #ef4444;
+}
+
+.admin-alert.alert-info {
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  color: #1e40af;
+  border-left: 4px solid #3b82f6;
+}
+
+.admin-credentials-info {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1rem;
+}
+
+.admin-credentials-info .alert {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border: 1px solid #0ea5e9;
+  border-radius: 10px;
+  margin-bottom: 0;
+}
+
+.admin-credentials-info code {
+  background: #1e293b;
+  color: #10b981;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+/* Loading state */
+.admin-login-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.admin-input:disabled,
+.admin-password-toggle:disabled,
+.admin-demo-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Responsive Design */
+@media (max-width: 576px) {
+  .admin-login-body {
+    padding: 1.5rem;
+  }
+  
+  .admin-login-header {
+    padding: 1rem;
+  }
+  
+  .admin-login-header .modal-title {
+    font-size: 1.1rem;
+  }
+  
+  .admin-input {
+    font-size: 16px; /* Prevent iOS zoom */
+  }
+}
+
+/* Animation for modal entrance */
+.admin-login-modal .modal-dialog {
+  animation: adminModalSlideIn 0.3s ease-out;
+}
+
+@keyframes adminModalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Focus states for accessibility */
+.admin-input:focus,
+.admin-password-toggle:focus,
+.admin-login-btn:focus,
+.admin-demo-btn:focus {
+  outline: none;
+}
+
+/* OAuth Divider */
+.oauth-divider {
+  position: relative;
+  text-align: center;
+  margin: 1.5rem 0;
+}
+
+.oauth-divider hr {
+  border-top: 1px solid #e5e7eb;
+  margin: 0;
+}
+
+.oauth-divider span {
+  background: #f8fafc;
+  color: #6b7280;
+  padding: 0 1rem;
+  font-size: 0.875rem;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* OAuth Buttons */
+.oauth-btn {
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  border-width: 1.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+}
+
+.oauth-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.oauth-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.oauth-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Google Button */
+.google-btn {
+  border-color: #dc2626;
+  color: #dc2626;
+}
+
+.google-btn:hover:not(:disabled) {
+  background: #dc2626;
+  border-color: #dc2626;
+  color: white;
+}
+
+.google-btn:focus {
+  box-shadow: 0 0 0 0.2rem rgba(220, 38, 38, 0.25);
+}
+
+/* Facebook Button */
+.facebook-btn {
+  border-color: #1877f2;
+  color: #1877f2;
+}
+
+.facebook-btn:hover:not(:disabled) {
+  background: #1877f2;
+  border-color: #1877f2;
+  color: white;
+}
+
+.facebook-btn:focus {
+  box-shadow: 0 0 0 0.2rem rgba(24, 119, 242, 0.25);
+}
+
+/* Twitter Button */
+.twitter-btn {
+  border-color: #1da1f2;
+  color: #1da1f2;
+}
+
+.twitter-btn:hover:not(:disabled) {
+  background: #1da1f2;
+  border-color: #1da1f2;
+  color: white;
+}
+
+.twitter-btn:focus {
+  box-shadow: 0 0 0 0.2rem rgba(29, 161, 242, 0.25);
+}
+
+/* GitHub Button */
+.github-btn {
+  border-color: #333;
+  color: #333;
+}
+
+.github-btn:hover:not(:disabled) {
+  background: #333;
+  border-color: #333;
+  color: white;
+}
+
+.github-btn:focus {
+  box-shadow: 0 0 0 0.2rem rgba(51, 51, 51, 0.25);
+}
+
+/* OAuth Button Icons */
+.oauth-btn i {
+  font-size: 1.1rem;
+}
+
+/* Loading state for OAuth buttons */
+.oauth-btn .spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Responsive OAuth Buttons */
+@media (max-width: 576px) {
+  .oauth-btn {
+    padding: 0.625rem 0.75rem;
+    font-size: 0.875rem;
+  }
+  
+  .oauth-btn i {
+    font-size: 1rem;
+  }
+  
+  .oauth-divider {
+    margin: 1rem 0;
+  }
+  
+  .oauth-divider span {
+    font-size: 0.8rem;
+    padding: 0 0.75rem;
+  }
+}
+
+/* Print styles */
+@media print {
+  .admin-login-modal {
+    display: none !important;
+  }
+}

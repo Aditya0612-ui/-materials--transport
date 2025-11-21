@@ -1,0 +1,272 @@
+/* Verification System Styling */
+
+.verification-modal .modal-content {
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.verification-modal .modal-header {
+  background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+  color: white;
+  border: none;
+  padding: 1.5rem 2rem;
+}
+
+.verification-modal .modal-title {
+  font-weight: 600;
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+}
+
+.verification-modal .modal-title::before {
+  content: '🔐';
+  margin-right: 0.5rem;
+  font-size: 1.5rem;
+}
+
+.verification-modal .btn-close {
+  filter: brightness(0) invert(1);
+  opacity: 0.8;
+}
+
+.verification-modal .btn-close:hover {
+  opacity: 1;
+}
+
+.verification-modal .modal-body {
+  padding: 2rem;
+  background: linear-gradient(135deg, #f8fffe 0%, #f0fdf4 100%);
+}
+
+/* Form Styling */
+.verification-modal .form-label {
+  font-weight: 600;
+  color: #065f46;
+  margin-bottom: 0.5rem;
+}
+
+.verification-modal .form-control {
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.verification-modal .form-control:focus {
+  border-color: #065f46;
+  box-shadow: 0 0 0 0.2rem rgba(6, 95, 70, 0.1);
+  background: white;
+}
+
+.verification-modal .form-select {
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+.verification-modal .input-group-text {
+  background: #f9fafb;
+  border-color: #d1d5db;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+/* OTP Input Specific Styles */
+.otp-input {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: 0.5rem;
+  text-align: center;
+  font-family: 'Courier New', monospace;
+}
+
+/* Button Styles */
+.verification-modal .btn-primary {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.verification-modal .btn-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.verification-modal .btn-success {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.verification-modal .btn-success:hover:not(:disabled) {
+  background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.4);
+}
+
+.verification-modal .btn-outline-secondary {
+  border-color: #d1d5db;
+  color: #6b7280;
+  background: transparent;
+}
+
+.verification-modal .btn-outline-secondary:hover:not(:disabled) {
+  background: #6b7280;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.verification-modal .btn-outline-info {
+  border: 2px solid #0ea5e9;
+  color: #0ea5e9;
+  background: transparent;
+}
+
+.verification-modal .btn-outline-info:hover:not(:disabled) {
+  background: #0ea5e9;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.verification-modal .btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Alert Styling */
+.verification-modal .alert {
+  border: none;
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.verification-modal .alert-success {
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+  color: #065f46;
+  border-left: 4px solid #059669;
+}
+
+.verification-modal .alert-danger {
+  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+  color: #dc2626;
+  border-left: 4px solid #ef4444;
+}
+
+.verification-modal .alert-warning {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  color: #d97706;
+  border-left: 4px solid #f59e0b;
+}
+
+.verification-modal .alert-info {
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  color: #1d4ed8;
+  border-left: 4px solid #3b82f6;
+}
+
+/* OTP Input Styling */
+.verification-modal .otp-input {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: 0.5rem;
+  text-align: center;
+  font-family: 'Courier New', monospace;
+}
+
+/* Phone Number Input */
+.verification-modal .phone-input {
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+/* Timer Styling */
+.verification-modal .timer-text {
+  color: #f59e0b;
+  font-weight: 600;
+}
+
+/* Loading Spinner */
+.verification-modal .spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Step Indicator */
+.verification-modal .step-indicator {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.verification-modal .step-indicator .step {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 0.5rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.verification-modal .step-indicator .step.active {
+  background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+  color: white;
+}
+
+.verification-modal .step-indicator .step.inactive {
+  background: #e5e7eb;
+  color: #6b7280;
+}
+
+.verification-modal .step-indicator .step.completed {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  color: white;
+}
+
+/* Animation for success */
+@keyframes successPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.verification-modal .alert-success {
+  animation: successPulse 0.6s ease-in-out;
+}
+
+/* Demo OTP Highlight */
+.verification-modal .demo-otp {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  padding: 0.5rem;
+  border-radius: 8px;
+  border-left: 4px solid #f59e0b;
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+}
+
+.verification-modal .demo-otp strong {
+  color: #d97706;
+}

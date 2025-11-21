@@ -1,0 +1,340 @@
+/* TopBar Component Styles */
+
+.topbar {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  padding: 0.75rem 1.5rem;
+  min-height: 70px;
+  backdrop-filter: blur(10px);
+  position: sticky;
+  top: 0;
+  z-index: 999;
+}
+
+/* Login Button Styles */
+.login-btn {
+  border-color: #065f46;
+  color: #065f46;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  border-width: 1.5px;
+}
+
+.login-btn:hover {
+  background: #065f46;
+  border-color: #065f46;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(6, 95, 70, 0.3);
+}
+
+.login-btn:focus {
+  box-shadow: 0 0 0 0.2rem rgba(6, 95, 70, 0.25);
+}
+
+/* User Avatar Image */
+.user-avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e5e7eb;
+  transition: border-color 0.2s ease;
+}
+
+.user-profile-btn:hover .user-avatar-img {
+  border-color: #065f46;
+}
+
+/* User Provider Badge */
+.user-provider {
+  color: #6b7280;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  margin-top: 0.25rem;
+}
+
+.user-provider i {
+  font-size: 0.875rem;
+}
+
+.topbar .navbar-brand {
+  margin-right: 0;
+}
+
+/* Mobile Menu Toggle */
+.mobile-menu-toggle {
+  color: #64748b;
+  border: none;
+  background: transparent;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.mobile-menu-toggle:hover {
+  background: rgba(6, 95, 70, 0.1);
+  color: #065f46;
+}
+
+.mobile-menu-toggle i {
+  font-size: 1.25rem;
+}
+
+/* Page Title Section */
+.page-title-section {
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+.page-icon {
+  font-size: 1.5rem;
+  color: #065f46;
+  margin-right: 0.75rem;
+  background: rgba(6, 95, 70, 0.1);
+  padding: 0.5rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+.page-title-text h5 {
+  color: #1e293b;
+  font-weight: 600;
+  font-size: 1.25rem;
+  margin-bottom: 0.25rem;
+  white-space: nowrap;
+}
+
+.page-title-text small {
+  color: #64748b;
+  font-size: 0.875rem;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+/* Search Section */
+.search-section {
+  flex: 1;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.search-input {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.search-input:focus-within {
+  border-color: #065f46;
+  box-shadow: 0 0 0 3px rgba(6, 95, 70, 0.1);
+}
+
+.search-input .input-group-text {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  padding: 0.75rem 1rem;
+}
+
+.search-input .form-control {
+  border: none;
+  background: transparent;
+  color: #1e293b;
+  font-size: 0.875rem;
+  padding: 0.75rem 1rem 0.75rem 0;
+}
+
+.search-input .form-control:focus {
+  box-shadow: none;
+  background: transparent;
+}
+
+.search-input .form-control::placeholder {
+  color: #94a3b8;
+  font-size: 0.875rem;
+}
+
+/* Quick Actions */
+.quick-actions {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Firebase Status */
+.quick-actions .me-3 {
+  margin-right: 1rem !important;
+}
+
+/* Notification Button */
+.notification-btn {
+  position: relative;
+  color: #64748b;
+  border: none;
+  background: transparent;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.notification-btn:hover {
+  background: rgba(6, 95, 70, 0.1);
+  color: #065f46;
+}
+
+.notification-btn i {
+  font-size: 1.25rem;
+}
+
+.notification-badge {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+  font-size: 0.625rem;
+  padding: 0.125rem 0.25rem;
+  min-width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Quick Add Button */
+.quick-add-btn {
+  background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(6, 95, 70, 0.2);
+}
+
+.quick-add-btn:hover {
+  background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(6, 95, 70, 0.3);
+}
+
+.quick-add-btn:focus {
+  box-shadow: 0 0 0 3px rgba(6, 95, 70, 0.2);
+}
+
+/* User Profile Button */
+.user-profile-btn {
+  color: #64748b;
+  border: none;
+  background: transparent;
+  padding: 0.25rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.user-profile-btn:hover {
+  background: rgba(6, 95, 70, 0.1);
+  color: #065f46;
+}
+
+.user-avatar-small {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1rem;
+}
+
+/* Dropdown Menus */
+.notification-menu,
+.user-menu {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 0.5rem 0;
+  min-width: 280px;
+}
+
+.notification-menu .dropdown-header,
+.user-menu .dropdown-header {
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  color: #1e293b;
+  font-size: 0.875rem;
+}
+
+.notification-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+}
+
+.notification-icon {
+  width: 32px;
+  height: 32px;
+  background: rgba(6, 95, 70, 0.1);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #065f46;
+  font-size: 0.875rem;
+}
+
+.notification-title {
+  font-weight: 500;
+  color: #1e293b;
+  font-size: 0.875rem;
+}
+
+.notification-text {
+  color: #64748b;
+  font-size: 0.75rem;
+}
+
+.user-info .user-name {
+  font-weight: 600;
+  color: #1e293b;
+  font-size: 0.875rem;
+}
+
+.user-info .user-email {
+  color: #64748b;
+  font-size: 0.75rem;
+}
+
+/* Animation for smooth transitions */
+.topbar * {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Focus states for accessibility */
+.topbar button:focus,
+.topbar .dropdown-toggle:focus {
+  outline: 2px solid #065f46;
+  outline-offset: 2px;
+}

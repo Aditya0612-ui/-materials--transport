@@ -1,0 +1,142 @@
+{
+  "rules": {
+    ".read": "auth != null",
+    ".write": "auth != null",
+    
+    "orders": {
+      ".indexOn": ["status", "customer", "createdAt"],
+      "$orderId": {
+        ".read": "auth != null",
+        ".write": "auth != null",
+        "status": {
+          ".write": "auth != null && (newData.val() != 'delivered' || root.child('verifications').child($orderId).exists())"
+        }
+      }
+    },
+    
+    "verifications": {
+      ".indexOn": ["orderId", "timestamp", "method"],
+      "$verificationId": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    },
+    
+    "settings": {
+      "otpAttempts": {
+        "$phoneNumber": {
+          ".read": "auth != null",
+          ".write": "auth != null"
+        }
+      }
+    },
+    
+    "vehicles": {
+      ".indexOn": ["status", "type", "driver"],
+      "$vehicleId": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    },
+    
+    "customers": {
+      ".indexOn": ["name", "status"],
+      "$customerId": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    },
+    
+    "materials": {
+      ".indexOn": ["category", "status"],
+      "$materialId": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    },
+    
+    "maintenanceSchedule": {
+      ".indexOn": ["vehicleId", "status", "priority", "scheduledDate"],
+      "$scheduleId": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    },
+    
+    "serviceHistory": {
+      ".indexOn": ["vehicleId", "serviceDate"],
+      "$serviceId": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    },
+    
+    "partsInventory": {
+      ".indexOn": ["category", "status"],
+      "$partId": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    },
+    
+    "invoices": {
+      ".indexOn": ["customerId", "status", "dueDate"],
+      "$invoiceId": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    },
+    
+    "contracts": {
+      ".indexOn": ["customerId", "status", "expiryDate"],
+      "$contractId": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    },
+    
+    "transportSystem": {
+      ".indexOn": ["status", "vehicleId"],
+      "$transportId": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    },
+    
+    "transportHistory": {
+      ".indexOn": ["vehicleId", "date"],
+      "$historyId": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    },
+    
+    "vehicleLocations": {
+      "$vehicleId": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    },
+    
+    "notifications": {
+      ".indexOn": ["timestamp", "read"],
+      "$notificationId": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    },
+    
+    "stats": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    
+    "fuelRecords": {
+      ".indexOn": ["vehicleId", "date"],
+      "$fuelId": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    }
+  }
+}

@@ -1,0 +1,20 @@
+// UPDATED CONSOLE COMMAND FOR NEW FIREBASE - Copy and paste this in browser console (F12)
+
+console.log('🚛 Clearing vehicle data from NEW Firebase...');
+
+fetch('https://materials--transport-default-rtdb.firebaseio.com/vehicles.json', {method: 'DELETE'})
+.then(() => console.log('✅ vehicles cleared'))
+.then(() => fetch('https://materials--transport-default-rtdb.firebaseio.com/transportSystem.json', {method: 'DELETE'}))
+.then(() => console.log('✅ transportSystem cleared'))
+.then(() => fetch('https://materials--transport-default-rtdb.firebaseio.com/transportHistory.json', {method: 'DELETE'}))
+.then(() => console.log('✅ transportHistory cleared'))
+.then(() => fetch('https://materials--transport-default-rtdb.firebaseio.com/trips.json', {method: 'DELETE'}))
+.then(() => console.log('✅ trips cleared'))
+.then(() => fetch('https://materials--transport-default-rtdb.firebaseio.com/.json', {method: 'DELETE'}))
+.then(() => {
+  console.log('🎉 ALL VEHICLE DATA CLEARED FROM NEW FIREBASE!');
+  console.log('✅ Database: materials--transport');
+  console.log('🔄 Refreshing page in 2 seconds...');
+  setTimeout(() => window.location.reload(), 2000);
+})
+.catch(err => console.error('❌ Error:', err));

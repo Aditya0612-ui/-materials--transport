@@ -1,0 +1,220 @@
+/* Fuel Management Print Styles */
+
+/* Print-specific styles - hide everything except the table */
+@media print {
+  /* Hide all non-essential elements */
+  .fuel-use-records .d-flex.justify-content-between.align-items-center:first-child,
+  .fuel-purchase-history .d-flex.justify-content-between.align-items-center:first-child,
+  .fuel-use-records .shadow-sm:has(.bg-light),
+  .fuel-purchase-history .shadow-sm:has(.bg-light),
+  .card-header .d-flex.gap-2,
+  button,
+  .btn,
+  .form-control,
+  .form-select,
+  input,
+  select,
+  textarea,
+  .modal,
+  .modal-backdrop,
+  .navbar,
+  .sidebar,
+  .topbar,
+  .filters,
+  .pagination,
+  .no-print {
+    display: none !important;
+  }
+
+  /* Hide filter cards */
+  .fuel-use-records .row.mb-4,
+  .fuel-purchase-history .row.mb-4 {
+    display: none !important;
+  }
+
+  /* Hide vehicle status cards */
+  .fuel-use-records .border-primary.shadow-sm {
+    display: none !important;
+  }
+
+  /* Show only the table container */
+  .fuel-use-records,
+  .fuel-purchase-history {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Table container */
+  .card.shadow-sm {
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  /* Card header - show title but hide buttons */
+  .card-header.bg-light {
+    background-color: white !important;
+    border: none !important;
+    padding: 10px 0 !important;
+  }
+
+  .card-header h6 {
+    font-size: 16px !important;
+    font-weight: bold !important;
+    color: #000 !important;
+    margin-bottom: 10px !important;
+  }
+
+  /* Hide action buttons in header */
+  .card-header .d-flex.gap-2 {
+    display: none !important;
+  }
+
+  /* Table styles for printing */
+  .table-responsive {
+    overflow: visible !important;
+  }
+
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    page-break-inside: auto !important;
+  }
+
+  thead {
+    display: table-header-group !important;
+    background-color: #f8f9fa !important;
+  }
+
+  thead th {
+    background-color: #343a40 !important;
+    color: white !important;
+    padding: 8px !important;
+    font-size: 11px !important;
+    border: 1px solid #dee2e6 !important;
+    font-weight: bold !important;
+  }
+
+  tbody tr {
+    page-break-inside: avoid !important;
+    page-break-after: auto !important;
+  }
+
+  tbody td {
+    padding: 6px 8px !important;
+    font-size: 10px !important;
+    border: 1px solid #dee2e6 !important;
+    color: #000 !important;
+  }
+
+  /* Hide action column buttons */
+  tbody td:last-child .d-flex.gap-1 {
+    display: none !important;
+  }
+
+  /* Badges - make them print-friendly */
+  .badge {
+    border: 1px solid #000 !important;
+    padding: 2px 6px !important;
+    font-size: 9px !important;
+    background-color: white !important;
+    color: #000 !important;
+  }
+
+  /* Remove shadows and backgrounds */
+  .shadow-sm,
+  .shadow,
+  .bg-light,
+  .bg-primary,
+  .bg-success,
+  .bg-warning,
+  .bg-danger,
+  .bg-info {
+    box-shadow: none !important;
+    background-color: white !important;
+  }
+
+  /* Page setup */
+  @page {
+    size: A4 landscape;
+    margin: 1cm;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Add print header */
+  .card-header h6::before {
+    content: "Fuel Management Report - ";
+    font-weight: bold;
+  }
+
+  /* Add page numbers */
+  @page {
+    @bottom-right {
+      content: "Page " counter(page) " of " counter(pages);
+    }
+  }
+
+  /* Ensure proper page breaks */
+  tr {
+    page-break-inside: avoid;
+  }
+
+  /* Hide empty state messages */
+  .text-center.py-5 {
+    display: none !important;
+  }
+
+  /* Hide icons in print */
+  .bx,
+  i[class*="bx"] {
+    display: none !important;
+  }
+
+  /* Make sure table is visible */
+  .card-body {
+    padding: 0 !important;
+  }
+
+  /* Remove container padding */
+  .container-fluid {
+    padding: 0 !important;
+  }
+
+  /* Compact row height for more records per page */
+  tbody tr {
+    height: auto !important;
+  }
+
+  /* Remove hover effects */
+  .table-hover tbody tr:hover {
+    background-color: transparent !important;
+  }
+
+  /* Print-specific table adjustments */
+  .table {
+    margin-bottom: 0 !important;
+  }
+
+  /* Hide popover triggers */
+  .overlay-trigger {
+    display: none !important;
+  }
+
+  /* Show actual values instead of truncated text */
+  .text-truncate {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+  }
+}
+
+/* Screen styles - normal display */
+@media screen {
+  /* Normal styles for screen viewing */
+  .print-only {
+    display: none;
+  }
+}
