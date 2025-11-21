@@ -73,6 +73,16 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
+// Validate Firebase config
+if (!firebaseConfig.projectId || !firebaseConfig.apiKey) {
+  console.error('❌ Firebase configuration is missing. Please check your environment variables.');
+  console.log('Available env vars:', {
+    hasApiKey: !!import.meta.env.VITE_FIREBASE_API_KEY,
+    hasProjectId: !!import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    hasAuthDomain: !!import.meta.env.VITE_FIREBASE_AUTH_DOMAIN
+  });
+}
+
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
