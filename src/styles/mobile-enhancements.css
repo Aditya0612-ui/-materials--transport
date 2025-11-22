@@ -1,6 +1,305 @@
 /* ===== MOBILE UX ENHANCEMENTS ===== */
 /* Comprehensive mobile-friendly improvements for better UX */
 
+/* ===== DESKTOP & ALL SCREENS - STATS CARDS STYLING ===== */
+
+/* Stats card base styling for all screens */
+.stats-card {
+  border-radius: 18px !important;
+  border: none !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+  min-height: 100px !important;
+}
+
+.stats-card:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Icon wrapper styling - override inline styles for Transport pages */
+.icon-wrapper {
+  width: 52px !important;
+  height: 52px !important;
+  border-radius: 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: #10b981 !important; /* Default green */
+}
+
+.icon-wrapper i {
+  font-size: 1.5rem !important;
+  color: white !important;
+}
+
+/* Transport System specific icon wrapper colors with higher specificity */
+.mb-4.g-3 .stats-card:nth-child(1) .icon-wrapper,
+.mb-4.g-3 > div:nth-child(1) .icon-wrapper {
+  background: #14b8a6 !important; /* Teal - Total Vehicles */
+}
+
+.mb-4.g-3 .stats-card:nth-child(2) .icon-wrapper,
+.mb-4.g-3 > div:nth-child(2) .icon-wrapper {
+  background: #7c3aed !important; /* Violet - Active */
+}
+
+.mb-4.g-3 .stats-card:nth-child(3) .icon-wrapper,
+.mb-4.g-3 > div:nth-child(3) .icon-wrapper {
+  background: #f59e0b !important; /* Amber - Maintenance */
+}
+
+.mb-4.g-3 .stats-card:nth-child(4) .icon-wrapper,
+.mb-4.g-3 > div:nth-child(4) .icon-wrapper {
+  background: #3b82f6 !important; /* Blue - Inactive */
+}
+
+/* Transport System & History cards - match Overview styling */
+.mb-4.g-3 .stats-card {
+  min-height: 100px !important;
+  border-radius: 18px !important;
+}
+
+.mb-4.g-3 .stats-card .card-body {
+  padding: 1.25rem !important;
+}
+
+.mb-4.g-3 .stats-card h3 {
+  font-size: 1.875rem !important;
+  font-weight: 700 !important;
+  margin-bottom: 0.25rem !important;
+}
+
+.mb-4.g-3 .stats-card p {
+  font-size: 0.8rem !important;
+  color: #6b7280 !important;
+  margin-bottom: 0 !important;
+}
+
+/* Card background colors - pastel theme matching reference images */
+.stats-cards-row > *:nth-child(1) .stats-card {
+  background: linear-gradient(135deg, #fff7ed, #ffedd5) !important; /* Light Orange - Total Vehicles */
+}
+
+.stats-cards-row > *:nth-child(2) .stats-card {
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7) !important; /* Light Green - Active Trips */
+}
+
+.stats-cards-row > *:nth-child(3) .stats-card {
+  background: linear-gradient(135deg, #eff6ff, #dbeafe) !important; /* Light Blue - Active Trip Distance */
+}
+
+.stats-cards-row > *:nth-child(4) .stats-card {
+  background: linear-gradient(135deg, #fefce8, #fef9c3) !important; /* Light Yellow - Fuel Cost */
+}
+
+.stats-cards-row > *:nth-child(5) .stats-card {
+  background: linear-gradient(135deg, #fef2f2, #fee2e2) !important; /* Light Pink - Total Cost */
+}
+
+.stats-cards-row > *:nth-child(6) .stats-card {
+  background: linear-gradient(135deg, #fff7ed, #ffedd5) !important; /* Light Orange - Completed Trips */
+}
+
+.stats-cards-row > *:nth-child(7) .stats-card {
+  background: linear-gradient(135deg, #eff6ff, #dbeafe) !important; /* Light Blue - Total Distance */
+}
+
+.stats-cards-row > *:nth-child(8) .stats-card {
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7) !important; /* Light Green - Total Revenue */
+}
+
+/* Stats card icon containers with solid color backgrounds */
+.stats-card .trend-icon {
+  width: 52px !important;
+  height: 52px !important;
+  border-radius: 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+}
+
+/* Icon color to white */
+.stats-card .trend-icon i {
+  font-size: 1.5rem !important;
+  color: white !important;
+  background: none !important;
+  -webkit-background-clip: unset !important;
+  -webkit-text-fill-color: white !important;
+  background-clip: unset !important;
+}
+
+/* Stats card body padding and layout */
+.stats-card .card-body {
+  padding: 1.25rem !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+}
+
+.stats-card .d-flex {
+  align-items: flex-start !important;
+  gap: 1rem !important;
+}
+
+/* Stats card title and value sizing */
+.stats-card h6 {
+  font-size: 0.8rem !important;
+  font-weight: 500 !important;
+  color: #6b7280 !important;
+  margin-bottom: 0.5rem !important;
+  line-height: 1.3 !important;
+}
+
+.stats-card h3 {
+  font-size: 1.875rem !important;
+  font-weight: 700 !important;
+  margin-bottom: 0.25rem !important;
+  line-height: 1.1 !important;
+}
+
+.stats-card small {
+  font-size: 0.7rem !important;
+  color: #9ca3af !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.25rem !important;
+}
+
+.stats-card small i {
+  font-size: 0.75rem !important;
+}
+
+/* Different solid colors for different card types - each card has unique color */
+.stats-cards-row > *:nth-child(1) .trend-icon {
+  background: #f97316 !important; /* Orange - Total Vehicles */
+}
+
+.stats-cards-row > *:nth-child(2) .trend-icon {
+  background: #10b981 !important; /* Green - Active Trips */
+}
+
+.stats-cards-row > *:nth-child(3) .trend-icon {
+  background: #6366f1 !important; /* Purple - Active Trip Distance */
+}
+
+.stats-cards-row > *:nth-child(4) .trend-icon {
+  background: #eab308 !important; /* Yellow - Fuel Cost */
+}
+
+.stats-cards-row > *:nth-child(5) .trend-icon {
+  background: #ef4444 !important; /* Red - Total Cost */
+}
+
+.stats-cards-row > *:nth-child(6) .trend-icon {
+  background: #10b981 !important; /* Green - Completed Trips */
+}
+
+.stats-cards-row > *:nth-child(7) .trend-icon {
+  background: #3b82f6 !important; /* Blue - Total Distance */
+}
+
+.stats-cards-row > *:nth-child(8) .trend-icon {
+  background: #10b981 !important; /* Green - Total Revenue */
+}
+
+/* ===== TRANSPORT SYSTEM & HISTORY PAGES STYLING ===== */
+
+/* Transport System - 4 cards styling with higher specificity */
+.mb-4.g-3 > div:nth-child(1) .stats-card,
+.mb-4.g-3 .stats-card:nth-child(1) {
+  background: linear-gradient(135deg, #ecfeff, #cffafe) !important; /* Light Cyan - Total Vehicles */
+}
+
+.mb-4.g-3 > div:nth-child(2) .stats-card,
+.mb-4.g-3 .stats-card:nth-child(2) {
+  background: linear-gradient(135deg, #f5f3ff, #ede9fe) !important; /* Light Purple - Active */
+}
+
+.mb-4.g-3 > div:nth-child(3) .stats-card,
+.mb-4.g-3 .stats-card:nth-child(3) {
+  background: linear-gradient(135deg, #fefce8, #fef9c3) !important; /* Light Yellow - Maintenance */
+}
+
+.mb-4.g-3 > div:nth-child(4) .stats-card,
+.mb-4.g-3 .stats-card:nth-child(4) {
+  background: linear-gradient(135deg, #eff6ff, #dbeafe) !important; /* Light Blue - Inactive */
+}
+
+/* Transport System icon colors - matching card backgrounds */
+.mb-4.g-3 > *:nth-child(1) .icon-wrapper {
+  background: #14b8a6 !important; /* Teal - Total Vehicles (matches Cyan bg) */
+}
+
+.mb-4.g-3 > *:nth-child(2) .icon-wrapper {
+  background: #7c3aed !important; /* Violet - Active (matches Purple bg) */
+}
+
+.mb-4.g-3 > *:nth-child(3) .icon-wrapper {
+  background: #f59e0b !important; /* Amber - Maintenance (matches Yellow bg) */
+}
+
+.mb-4.g-3 > *:nth-child(4) .icon-wrapper {
+  background: #3b82f6 !important; /* Blue - Inactive (matches Blue bg) */
+}
+
+/* Transport History - 6 cards with unique icon colors */
+
+/* Card 1 - Total Trips */
+.mb-4.g-3 > *:nth-child(1) .stats-card:not(.mb-4.g-3 > *:nth-child(1):first-child .stats-card) {
+  background: linear-gradient(135deg, #ecfdf5, #d1fae5) !important; /* Light Green */
+}
+
+.mb-4.g-3 > *:nth-child(1) .icon-wrapper {
+  background: #10b981 !important; /* Green - Total Trips */
+}
+
+/* Card 2 - Completed */  
+.mb-4.g-3 > *:nth-child(2) .stats-card:not(.mb-4.g-3 > *:nth-child(2):first-child .stats-card) {
+  background: linear-gradient(135deg, #ecfdf5, #d1fae5) !important; /* Light Green */
+}
+
+.mb-4.g-3 > *:nth-child(2) .icon-wrapper {
+  background: #10b981 !important; /* Green - Completed */
+}
+
+/* Card 3 - In Progress */
+.mb-4.g-3 > *:nth-child(3) .stats-card:not(.mb-4.g-3 > *:nth-child(3):first-child .stats-card) {
+  background: linear-gradient(135deg, #fff7ed, #ffedd5) !important; /* Light Orange */
+}
+
+.mb-4.g-3 > *:nth-child(3) .icon-wrapper {
+  background: #eab308 !important; /* Yellow - In Progress */
+}
+
+/* Card 4 - Planned */
+.mb-4.g-3 > *:nth-child(4) .stats-card:not(.mb-4.g-3 > *:nth-child(4):first-child .stats-card) {
+  background: linear-gradient(135deg, #eff6ff, #dbeafe) !important; /* Light Blue */
+}
+
+.mb-4.g-3 > *:nth-child(4) .icon-wrapper {
+  background: #3b82f6 !important; /* Blue - Planned */
+}
+
+/* Card 5 - Total KM */
+.mb-4.g-3 > *:nth-child(5) .stats-card {
+  background: linear-gradient(135deg, #eff6ff, #dbeafe) !important; /* Light Blue */
+}
+
+.mb-4.g-3 > *:nth-child(5) .icon-wrapper {
+  background: #6366f1 !important; /* Purple/Blue - Total KM */
+}
+
+/* Card 6 - Total Cost */
+.mb-4.g-3 > *:nth-child(6) .stats-card {
+  background: linear-gradient(135deg, #fef2f2, #fee2e2) !important; /* Light Pink/Red */
+}
+
+.mb-4.g-3 > *:nth-child(6) .icon-wrapper {
+  background: #ef4444 !important; /* Red - Total Cost */
+}
+
 /* ===== BASE MOBILE STYLES (< 768px) ===== */
 @media (max-width: 767px) {
 
@@ -39,6 +338,14 @@
     padding: 0 !important;
     min-height: 100vh;
     overflow-x: hidden !important;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+
+  /* Prevent body scroll when sidebar is open */
+  body.sidebar-open {
+    overflow: hidden !important;
+    position: fixed !important;
+    width: 100% !important;
   }
 
   .content-area {
@@ -71,10 +378,28 @@
 
   /* Mobile menu toggle */
   .mobile-menu-toggle {
-    min-width: 44px;
-    min-height: 44px;
+    min-width: 44px !important;
+    min-height: 44px !important;
     padding: 0.5rem !important;
-    margin-right: 0.25rem !important;
+    margin-right: 0.5rem !important;
+    border: none !important;
+    background: transparent !important;
+    color: #065f46 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 8px !important;
+    transition: all 0.2s ease !important;
+  }
+
+  .mobile-menu-toggle:hover,
+  .mobile-menu-toggle:focus {
+    background: rgba(6, 95, 70, 0.1) !important;
+    color: #065f46 !important;
+  }
+
+  .mobile-menu-toggle:active {
+    transform: scale(0.95) !important;
   }
 
   .mobile-menu-toggle i {
@@ -95,6 +420,13 @@
     margin-right: 0.5rem !important;
     display: none;
     /* Hide icon on very small screens */
+  }
+
+  .page-icon i {
+    background: linear-gradient(135deg, #065f46, #10b981) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
   }
 
   .page-title-text h5 {
@@ -164,12 +496,47 @@
   /* === STATS CARDS === */
   .stats-card {
     margin-bottom: 12px !important;
-    border-radius: 12px !important;
+    border-radius: 16px !important;
+    border: none !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
   }
 
   .stats-card .card-body {
-    padding: 1rem !important;
+    padding: 1.25rem !important;
     width: 100% !important;
+  }
+
+  /* Card background colors - pastel theme */
+  .stats-card:nth-child(1) {
+    background: linear-gradient(135deg, #fff7ed, #ffedd5) !important; /* Light Orange */
+  }
+
+  .stats-card:nth-child(2) {
+    background: linear-gradient(135deg, #f0fdf4, #dcfce7) !important; /* Light Green */
+  }
+
+  .stats-card:nth-child(3) {
+    background: linear-gradient(135deg, #eff6ff, #dbeafe) !important; /* Light Blue */
+  }
+
+  .stats-card:nth-child(4) {
+    background: linear-gradient(135deg, #fefce8, #fef9c3) !important; /* Light Yellow */
+  }
+
+  .stats-card:nth-child(5) {
+    background: linear-gradient(135deg, #fef2f2, #fee2e2) !important; /* Light Red/Pink */
+  }
+
+  .stats-card:nth-child(6) {
+    background: linear-gradient(135deg, #f0fdf4, #dcfce7) !important; /* Light Green */
+  }
+
+  .stats-card:nth-child(7) {
+    background: linear-gradient(135deg, #eff6ff, #dbeafe) !important; /* Light Blue */
+  }
+
+  .stats-card:nth-child(8) {
+    background: linear-gradient(135deg, #fefce8, #fef9c3) !important; /* Light Yellow */
   }
 
   .stats-cards-row {
@@ -199,8 +566,57 @@
     font-size: 0.7rem !important;
   }
 
+  /* Stats card icon containers with solid color backgrounds */
+  .stats-card .trend-icon {
+    width: 56px !important;
+    height: 56px !important;
+    border-radius: 14px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  /* Override icon color to white when inside colored background */
   .stats-card .trend-icon i {
-    font-size: 1.25rem !important;
+    font-size: 1.5rem !important;
+    color: white !important;
+    background: none !important;
+    -webkit-background-clip: unset !important;
+    -webkit-text-fill-color: white !important;
+    background-clip: unset !important;
+  }
+
+  /* Different solid colors for different card types - matching desktop */
+  .stats-cards-row > *:nth-child(1) .trend-icon {
+    background: #f97316 !important; /* Orange - Total Vehicles */
+  }
+
+  .stats-cards-row > *:nth-child(2) .trend-icon {
+    background: #10b981 !important; /* Green - Active Trips */
+  }
+
+  .stats-cards-row > *:nth-child(3) .trend-icon {
+    background: #6366f1 !important; /* Purple - Active Trip Distance */
+  }
+
+  .stats-cards-row > *:nth-child(4) .trend-icon {
+    background: #eab308 !important; /* Yellow - Fuel Cost */
+  }
+
+  .stats-cards-row > *:nth-child(5) .trend-icon {
+    background: #ef4444 !important; /* Red - Total Cost */
+  }
+
+  .stats-cards-row > *:nth-child(6) .trend-icon {
+    background: #10b981 !important; /* Green - Completed Trips */
+  }
+
+  .stats-cards-row > *:nth-child(7) .trend-icon {
+    background: #3b82f6 !important; /* Blue - Total Distance */
+  }
+
+  .stats-cards-row > *:nth-child(8) .trend-icon {
+    background: #10b981 !important; /* Green - Total Revenue */
   }
 
   /* === CARDS === */
@@ -502,32 +918,192 @@
   .sidebar,
   .enhanced-sidebar {
     position: fixed !important;
-    transform: translateX(-100%);
-    transition: transform 0.3s ease-in-out;
+    top: 0 !important;
+    left: 0 !important;
+    height: 100vh !important;
     width: 280px !important;
-    z-index: 1050;
+    max-width: 85vw !important;
+    transform: translateX(-100%) !important;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    z-index: 1050 !important;
+    background: white !important;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1) !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
   }
 
+  /* Sidebar expanded state */
   .sidebar.expanded,
   .enhanced-sidebar.expanded {
-    transform: translateX(0);
+    transform: translateX(0) !important;
+  }
+
+  /* Sidebar collapsed state (when closed) */
+  .sidebar.collapsed,
+  .enhanced-sidebar.collapsed {
+    transform: translateX(-100%) !important;
   }
 
   /* Sidebar backdrop */
   .sidebar-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
-    z-index: 1040;
-    display: none;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+    backdrop-filter: blur(4px) !important;
+    z-index: 1040 !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transition: opacity 0.3s ease, visibility 0.3s ease !important;
   }
 
   .sidebar-backdrop.show {
-    display: block;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  /* Sidebar header - sticky */
+  .sidebar-header {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 10 !important;
+    background: white !important;
+    border-bottom: 1px solid #e5e7eb !important;
+    padding: 1rem !important;
+  }
+
+  /* Sidebar toggle button */
+  .sidebar-toggle {
+    min-width: 44px !important;
+    min-height: 44px !important;
+    padding: 0.5rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .sidebar-toggle i {
+    font-size: 1.5rem !important;
+  }
+
+  /* Sidebar brand */
+  .sidebar-brand h6 {
+    font-size: 0.95rem !important;
+    line-height: 1.3 !important;
+  }
+
+  .sidebar-brand small {
+    font-size: 0.75rem !important;
+  }
+
+  .brand-icon {
+    font-size: 1.5rem !important;
+    background: linear-gradient(135deg, #065f46, #10b981) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+  }
+
+  /* Sidebar navigation */
+  .sidebar-nav {
+    padding: 0.5rem !important;
+  }
+
+  .sidebar-item {
+    min-height: 48px !important;
+    padding: 0.75rem 1rem !important;
+    margin-bottom: 0.25rem !important;
+    border-radius: 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    font-size: 0.95rem !important;
+    transition: all 0.2s ease !important;
+  }
+
+  .sidebar-item.active {
+    background: #065f46 !important;
+    color: white !important;
+  }
+
+  .sidebar-icon {
+    font-size: 1.25rem !important;
+    margin-right: 0.75rem !important;
+    min-width: 24px !important;
+    background: linear-gradient(135deg, #065f46, #10b981) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+  }
+
+  /* Sidebar groups */
+  .sidebar-group-header {
+    min-height: 48px !important;
+    padding: 0.75rem 1rem !important;
+    margin-bottom: 0.25rem !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+  }
+
+  .sidebar-submenu {
+    padding-left: 1rem !important;
+  }
+
+  .submenu-item {
+    min-height: 44px !important;
+    padding: 0.625rem 1rem !important;
+    font-size: 0.9rem !important;
+  }
+
+  /* Verification button */
+  .verification-btn {
+    min-height: 48px !important;
+    margin: 0.5rem !important;
+    border-radius: 8px !important;
+    font-size: 0.95rem !important;
+  }
+
+  /* Sidebar footer */
+  .sidebar-footer {
+    position: sticky !important;
+    bottom: 0 !important;
+    background: white !important;
+    border-top: 1px solid #e5e7eb !important;
+    padding: 1rem !important;
+  }
+
+  .user-avatar {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50% !important;
+    background: #065f46 !important;
+    color: white !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin-right: 0.75rem !important;
+  }
+
+  .user-avatar i {
+    font-size: 1.25rem !important;
+  }
+
+  .user-details {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .user-name {
+    font-weight: 600 !important;
+    font-size: 0.9rem !important;
+  }
+
+  .user-role {
+    font-size: 0.75rem !important;
+    color: #6b7280 !important;
   }
 
   /* === TABS === */
