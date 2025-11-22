@@ -25,22 +25,32 @@ const TopBar = ({ sidebarCollapsed, setSidebarCollapsed, activeTab }) => {
   };
 
   const getPageTitle = (tab) => {
+    // Check if mobile view
+    const isMobile = window.innerWidth < 768;
+    
     const titles = {
       'overview': t('dashboard.overview'),
-      'transport': t('transport.systemTitle'),
-      'transport-history': t('transport.historyTitle'),
-      'vehicle-tracking': t('transport.liveTracking'),
+      'transport': isMobile ? 'Transport System' : t('transport.systemTitle'),
+      'transport-history': isMobile ? 'Trip History' : 'Transport History & Trip Management',
+      'vehicle-tracking': isMobile ? 'Live Tracking' : t('transport.liveTracking'),
       'fuel-purchase': t('fuel.title'),
-      'fuel-records': t('fuel.consumption'),
-      'maintenance-schedule': t('maintenance.schedule'),
-      'service-history': t('maintenance.history'),
-      'parts-inventory': t('maintenance.inventory'),
+      'fuel-records': isMobile ? 'Fuel Records' : t('fuel.consumption'),
+      'maintenance-schedule': isMobile ? 'Maintenance' : t('maintenance.schedule'),
+      'service-history': isMobile ? 'Service History' : t('maintenance.history'),
+      'parts-inventory': isMobile ? 'Parts' : t('maintenance.inventory'),
       'billing': t('billing.title'),
       'contracts': t('business.contracts'),
       'reports': t('navigation.reports'),
       'records': 'Custom Records'
     };
     return titles[tab] || t('common.dashboard');
+  };
+
+  const getPageSubtitle = (tab) => {
+    const subtitles = {
+      'transport-history': 'Create new trips from Transport System section'
+    };
+    return subtitles[tab] || null;
   };
 
   const getPageIcon = (tab) => {
@@ -64,7 +74,7 @@ const TopBar = ({ sidebarCollapsed, setSidebarCollapsed, activeTab }) => {
 
   return (
     <Navbar className="topbar" expand="lg">
-      <div className="d-flex align-items-center w-100">
+      <div className="d-flex align-items-center justify-content-between w-100">
         {/* Mobile Menu Toggle */}
         <Button
           variant="link"
@@ -74,25 +84,32 @@ const TopBar = ({ sidebarCollapsed, setSidebarCollapsed, activeTab }) => {
           <i className="bx bx-menu"></i>
         </Button>
 
-        {/* Page Title */}
-        <div className="page-title-section flex-grow-1">
+        {/* Page Title - Hidden on mobile */}
+        <div className="page-title-section flex-grow-1 d-none d-md-block">
           <div className="d-flex align-items-center">
-            <i className={`page-icon d-none d-sm-flex ${getPageIcon(activeTab)}`}></i>
+            <i className={`page-icon ${getPageIcon(activeTab)}`}></i>
             <div className="page-title-text">
               <h5 className="mb-0">{getPageTitle(activeTab)}</h5>
-              <small className="text-muted d-none d-md-block">
-                {new Date().toLocaleDateString('en-IN', {
-                  weekday: 'long',
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric'
-                })}
-              </small>
+              {getPageSubtitle(activeTab) ? (
+                <small className="text-muted">
+                  <i className="bx bx-info-circle me-1"></i>
+                  {getPageSubtitle(activeTab)}
+                </small>
+              ) : (
+                <small className="text-muted">
+                  {new Date().toLocaleDateString('en-IN', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}
+                </small>
+              )}
             </div>
           </div>
         </div>
 
-        <div className="quick-actions flex-shrink-0">
+        <div className="quick-actions d-flex align-items-center ms-auto">
           {/* Language Switcher - Hide on mobile */}
           <div className="me-2 d-none d-md-block">
             <LanguageSwitcher />
