@@ -496,32 +496,31 @@
   /* === STATS CARDS === */
   .stats-card {
     margin-bottom: 10px !important;
-    border-radius: 14px !important;
+    border-radius: 16px !important;
     border: none !important;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
-    height: 145px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+    height: 150px !important;
   }
 
   .stats-card .card-body {
-    padding: 0.85rem 0.75rem !important;
+    padding: 0.9rem 0.8rem !important;
     width: 100% !important;
     height: 100% !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: flex-start !important;
-    overflow: hidden !important;
+    overflow: visible !important;
   }
 
   .stats-card .d-flex {
-    margin-bottom: 0.4rem !important;
+    margin-bottom: 0.5rem !important;
   }
 
   /* Specific adjustments for cards with longer values */
   .stats-cards-row > *:nth-child(7) .stats-card h3,
   .stats-cards-row > *:nth-child(3) .stats-card h3 {
-    font-size: 1.15rem !important;
+    font-size: 1.35rem !important;
     line-height: 1.1 !important;
-    white-space: nowrap !important;
   }
 
   /* Card background colors - pastel theme */
@@ -571,41 +570,43 @@
   }
 
   .stats-card h6 {
-    font-size: 0.7rem !important;
-    margin-bottom: 0.5rem !important;
+    font-size: 0.72rem !important;
+    margin-bottom: 0.45rem !important;
     line-height: 1.2 !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
     white-space: nowrap !important;
     max-width: 100% !important;
     font-weight: 500 !important;
+    color: #6b7280 !important;
   }
 
   .stats-card h3 {
-    font-size: 1.4rem !important;
-    margin-bottom: 0.3rem !important;
+    font-size: 1.5rem !important;
+    margin-bottom: 0.35rem !important;
     line-height: 1.1 !important;
     font-weight: 700 !important;
     white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
+    overflow: visible !important;
+    word-wrap: normal !important;
   }
 
   .stats-card small {
-    font-size: 0.62rem !important;
-    line-height: 1.25 !important;
+    font-size: 0.65rem !important;
+    line-height: 1.3 !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
     display: -webkit-box !important;
     -webkit-line-clamp: 2 !important;
     -webkit-box-orient: vertical !important;
-    max-height: 2.5em !important;
+    max-height: 2.6em !important;
     word-break: break-word !important;
+    color: #9ca3af !important;
   }
 
   .stats-card small i {
-    font-size: 0.6rem !important;
-    margin-right: 2px !important;
+    font-size: 0.62rem !important;
+    margin-right: 3px !important;
   }
 
   /* Stats card icon containers with solid color backgrounds */
