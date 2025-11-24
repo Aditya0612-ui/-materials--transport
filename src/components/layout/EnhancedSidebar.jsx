@@ -214,7 +214,9 @@ const EnhancedSidebar = ({
   return (
     <>
       <div 
-        className={`sidebar enhanced-sidebar ${sidebarCollapsed ? 'collapsed' : 'expanded'}`}
+        className={`sidebar enhanced-sidebar ${sidebarCollapsed ? 'collapsed' : 'expanded'} 
+          fixed lg:static inset-y-0 left-0 z-[1000] transform transition-transform duration-300 ease-in-out
+          ${sidebarCollapsed ? '-translate-x-full lg:translate-x-0' : 'translate-x-0'}`}
       >
         {/* Sidebar Header */}
         <div className="sidebar-header">

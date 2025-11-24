@@ -42,12 +42,12 @@ const SupplierDashboard = () => {
       <TransportProvider>
           <div className="dashboard-layout">
             {/* Mobile sidebar backdrop */}
-            {!sidebarCollapsed && window.innerWidth < 992 && (
-              <div 
-                className="sidebar-backdrop show" 
-                onClick={() => setSidebarCollapsed(true)}
-              />
-            )}
+            <div 
+              className={`fixed inset-0 bg-black transition-opacity duration-300 z-[999] lg:hidden
+                ${!sidebarCollapsed ? 'opacity-50' : 'opacity-0 pointer-events-none'}`}
+              onClick={() => setSidebarCollapsed(true)}
+              aria-hidden="true"
+            />
 
             <EnhancedSidebar
               activeTab={activeTab}

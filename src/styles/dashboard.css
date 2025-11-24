@@ -31,14 +31,9 @@ body {
 
 /* ===== SIDEBAR STYLES ===== */
 .sidebar, .enhanced-sidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
   height: 100vh;
   background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
   color: #64748b;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 1000;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0,0,0,0.05);
   border-right: 1px solid #e2e8f0;
   overflow-y: auto;
@@ -47,6 +42,13 @@ body {
   flex-direction: column;
   scrollbar-width: thin;
   scrollbar-color: #065f46 #f1f5f9;
+}
+
+/* Desktop: sidebar always visible at static position */
+@media (min-width: 1024px) {
+  .sidebar, .enhanced-sidebar {
+    position: static;
+  }
 }
 
 /* Webkit scrollbar styling */
