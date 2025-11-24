@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Card, Button, Spinner, Form, Alert, InputGroup } from 'react-bootstrap';
 import 'boxicons/css/boxicons.min.css';
-import { useAuth } from '../../context/AuthContext';
 import { authHelpers } from '../../config/firebase';
 import './LoginPage.css';
 
 const LoginPage = () => {
-  const { signInWithGoogle } = useAuth();
-  const [isLoading, setIsLoading] = useState(false);
   const [emailLoading, setEmailLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -53,24 +50,6 @@ const LoginPage = () => {
     }
   };
 
-  const handleGoogleLogin = async () => {
-    setIsLoading(true);
-    try {
-      const result = await signInWithGoogle();
-      if (result.success) {
-        showAlert('Google login successful!', 'success');
-      } else {
-        console.error('❌ Google sign-in failed:', result.error);
-        showAlert(`Google login failed: ${result.error}`, 'danger');
-      }
-    } catch (error) {
-      console.error('❌ Google sign-in error:', error);
-      showAlert(`Google login error: ${error.message}`, 'danger');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
     <div className="simple-login-page">
       <Container>
@@ -110,7 +89,7 @@ const LoginPage = () => {
                         value={formData.email}
                         onChange={handleInputChange}
                         className="login-input"
-                        disabled={emailLoading || isLoading}
+                        disabled={emailLoading}
                         required
                       />
                     </InputGroup>
@@ -132,14 +111,14 @@ const LoginPage = () => {
                         value={formData.password}
                         onChange={handleInputChange}
                         className="login-input"
-                        disabled={emailLoading || isLoading}
+                        disabled={emailLoading}
                         required
                       />
                       <Button
                         variant="outline-secondary"
                         onClick={() => setShowPassword(!showPassword)}
                         className="password-toggle-btn"
-                        disabled={emailLoading || isLoading}
+                        disabled={emailLoading}
                       >
                         {showPassword ? 
                           <i className="bx bx-hide"></i> : 
@@ -154,7 +133,7 @@ const LoginPage = () => {
                       type="submit"
                       variant="primary"
                       size="lg"
-                      disabled={emailLoading || isLoading}
+                      disabled={emailLoading}
                       className="email-login-btn"
                     >
                       {emailLoading ? (
@@ -171,37 +150,6 @@ const LoginPage = () => {
                     </Button>
                   </div>
                 </Form>
-
-                {/* Divider */}
-                <div className="login-divider mb-3">
-                  <hr />
-                  <span>Or continue with</span>
-                  <hr />
-                </div>
-
-                {/* Google Login */}
-                <div className="d-grid gap-3">
-                  <Button
-                    variant="outline-danger"
-                    size="lg"
-                    onClick={handleGoogleLogin}
-                    disabled={isLoading || emailLoading}
-                    className="google-login-btn"
-                  >
-                    {isLoading ? (
-                      <>
-                        <Spinner size="sm" className="me-2" />
-                        Signing in...
-                      </>
-                    ) : (
-                      <>
-                        <i className="bx bxl-google me-2" style={{fontSize: '20px'}}></i>
-                        Continue with Google
-                      </>
-                    )}
-                  </Button>
-                </div>
-
 
               </Card.Body>
             </Card>
