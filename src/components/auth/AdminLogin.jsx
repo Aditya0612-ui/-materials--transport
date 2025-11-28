@@ -37,13 +37,13 @@ const AdminLogin = ({ show, onHide, onLoginSuccess }) => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    
+
     // Validation
     if (!formData.username.trim()) {
       showAlert('Please enter username', 'danger');
       return;
     }
-    
+
     if (!formData.password.trim()) {
       showAlert('Please enter password', 'danger');
       return;
@@ -54,9 +54,9 @@ const AdminLogin = ({ show, onHide, onLoginSuccess }) => {
     // Simulate API call delay
     setTimeout(() => {
       // Check credentials
-      if (formData.username === ADMIN_CREDENTIALS.username && 
-          formData.password === ADMIN_CREDENTIALS.password) {
-        
+      if (formData.username === ADMIN_CREDENTIALS.username &&
+        formData.password === ADMIN_CREDENTIALS.password) {
+
         // Store login state
         const adminData = {
           username: formData.username,
@@ -71,7 +71,7 @@ const AdminLogin = ({ show, onHide, onLoginSuccess }) => {
         }
 
         showAlert('✅ Login successful! Welcome Admin', 'success');
-        
+
         setTimeout(() => {
           setIsLoading(false);
           onLoginSuccess(adminData);
@@ -129,11 +129,11 @@ const AdminLogin = ({ show, onHide, onLoginSuccess }) => {
   const handleGithubLogin = () => handleOAuthLogin('GitHub', signInWithGithub);
 
   return (
-    <Modal 
-      show={show} 
-      onHide={onHide} 
-      centered 
-      size="md" 
+    <Modal
+      show={show}
+      onHide={onHide}
+      centered
+      size="md"
       onExited={resetForm}
       className="admin-login-modal"
       backdrop="static"
@@ -142,12 +142,12 @@ const AdminLogin = ({ show, onHide, onLoginSuccess }) => {
       <Modal.Header closeButton className="admin-login-header">
         <Modal.Title className="d-flex align-items-center">
           <div className="admin-icon-wrapper me-3">
-            <i className="bx bx-user" style={{fontSize: '24px'}}></i>
+            <i className="bx bx-user" style={{ fontSize: '24px' }}></i>
           </div>
           Admin Login
         </Modal.Title>
       </Modal.Header>
-      
+
       <Modal.Body className="admin-login-body">
         {alert.show && (
           <Alert variant={alert.type} className="mb-3 admin-alert">
@@ -158,12 +158,12 @@ const AdminLogin = ({ show, onHide, onLoginSuccess }) => {
         <Form onSubmit={handleLogin}>
           <Form.Group className="mb-3">
             <Form.Label className="admin-label">
-              <i className="bx bx-user me-2" style={{fontSize: '16px'}}></i>
+              <i className="bx bx-user me-2" style={{ fontSize: '16px' }}></i>
               Username
             </Form.Label>
             <InputGroup>
               <InputGroup.Text className="admin-input-icon">
-                <i className="bx bx-user" style={{fontSize: '18px'}}></i>
+                <i className="bx bx-user" style={{ fontSize: '18px' }}></i>
               </InputGroup.Text>
               <Form.Control
                 type="text"
@@ -173,18 +173,19 @@ const AdminLogin = ({ show, onHide, onLoginSuccess }) => {
                 onChange={handleInputChange}
                 className="admin-input"
                 disabled={isLoading}
+                style={{ height: '48px', fontSize: '15px' }}
               />
             </InputGroup>
           </Form.Group>
 
           <Form.Group className="mb-3">
             <Form.Label className="admin-label">
-              <i className="bx bx-lock me-2" style={{fontSize: '16px'}}></i>
+              <i className="bx bx-lock me-2" style={{ fontSize: '16px' }}></i>
               Password
             </Form.Label>
             <InputGroup>
               <InputGroup.Text className="admin-input-icon">
-                <i className="bx bx-lock" style={{fontSize: '18px'}}></i>
+                <i className="bx bx-lock" style={{ fontSize: '18px' }}></i>
               </InputGroup.Text>
               <Form.Control
                 type={showPassword ? 'text' : 'password'}
@@ -194,6 +195,7 @@ const AdminLogin = ({ show, onHide, onLoginSuccess }) => {
                 onChange={handleInputChange}
                 className="admin-input"
                 disabled={isLoading}
+                style={{ height: '48px', fontSize: '15px' }}
               />
               <Button
                 variant="outline-secondary"
@@ -201,9 +203,9 @@ const AdminLogin = ({ show, onHide, onLoginSuccess }) => {
                 className="admin-password-toggle"
                 disabled={isLoading}
               >
-                {showPassword ? 
-                  <i className="bx bx-hide" style={{fontSize: '18px'}}></i> : 
-                  <i className="bx bx-show" style={{fontSize: '18px'}}></i>
+                {showPassword ?
+                  <i className="bx bx-hide" style={{ fontSize: '18px' }}></i> :
+                  <i className="bx bx-show" style={{ fontSize: '18px' }}></i>
                 }
               </Button>
             </InputGroup>

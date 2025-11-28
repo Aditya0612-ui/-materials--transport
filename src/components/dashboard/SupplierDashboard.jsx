@@ -1,6 +1,5 @@
 // src/components/dashboard/SupplierDashboard.jsx
 import React, { useState } from 'react';
-import { Container, Row, Col } from 'react-bootstrap';
 import 'boxicons/css/boxicons.min.css';
 import '../../styles/mobile-enhancements.css';
 import EnhancedSidebar from '../layout/EnhancedSidebar';
@@ -19,14 +18,14 @@ import TransportProvider from '../../context/TransportContext';
 
 const SupplierDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(window.innerWidth < 992);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(window.innerWidth < 1024);
   const [showVerification, setShowVerification] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
 
   const handleVerificationComplete = (type) => {
     setIsVerified(true);
     console.log(`✅ Verification completed successfully with type: ${type}`);
-    
+
     // Show success notification
     const event = new CustomEvent('showNotification', {
       detail: {
@@ -40,92 +39,114 @@ const SupplierDashboard = () => {
   return (
     <MaintenanceProvider>
       <TransportProvider>
-          <div className="dashboard-layout">
-            {/* Mobile sidebar backdrop */}
-            <div 
-              className={`fixed inset-0 bg-black transition-opacity duration-300 z-[999] lg:hidden
-                ${!sidebarCollapsed ? 'opacity-50' : 'opacity-0 pointer-events-none'}`}
-              onClick={() => setSidebarCollapsed(true)}
-              aria-hidden="true"
-            />
+        <div className="flex h-screen bg-slate-50 overflow-hidden">
+          {/* Mobile sidebar backdrop */}
+          <div
+            className={`fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300 z-40 lg:hidden
+                ${!sidebarCollapsed ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+            onClick={() => setSidebarCollapsed(true)}
+            aria-hidden="true"
+          />
 
-            <EnhancedSidebar
-              activeTab={activeTab}
-              setActiveTab={setActiveTab}
-              isVerified={isVerified}
-              onVerificationClick={() => setShowVerification(true)}
+          <EnhancedSidebar
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            isVerified={isVerified}
+            onVerificationClick={() => setShowVerification(true)}
+            sidebarCollapsed={sidebarCollapsed}
+            setSidebarCollapsed={setSidebarCollapsed}
+          />
+
+          <div className="flex-1 flex flex-col min-w-0 overflow-hidden transition-all duration-300">
+            <TopBar
               sidebarCollapsed={sidebarCollapsed}
               setSidebarCollapsed={setSidebarCollapsed}
+              activeTab={activeTab}
             />
-            
-            <div className={`main-content ${sidebarCollapsed ? 'sidebar-collapsed' : 'sidebar-expanded'}`}>
-              <TopBar
-                sidebarCollapsed={sidebarCollapsed}
-                setSidebarCollapsed={setSidebarCollapsed}
-                activeTab={activeTab}
-              />
-              
-              <div className="content-area">
-                <Container fluid className="p-0">
-                  {activeTab === 'overview' && (
+
+            <main className="flex-1 overflow-y-auto p-4 lg:p-8 scrollbar-thin">
+              <div className="max-w-[1600px] mx-auto">
+                {activeTab === 'overview' && (
+                  <div className="animate-fadeIn">
+                    <div className="mb-6">
+                      <h1 className="text-2xl font-bold text-slate-800">Dashboard Overview</h1>
+                      <p className="text-slate-500">Welcome back, here's what's happening today.</p>
+                    </div>
                     <StatsCards />
-                  )}
+                  </div>
+                )}
 
-                  {activeTab === 'transport' && (
+                {activeTab === 'transport' && (
+                  <div className="animate-fadeIn">
                     <TransportSystem />
-                  )}
+                  </div>
+                )}
 
-                  {activeTab === 'transport-history' && (
+                {activeTab === 'transport-history' && (
+                  <div className="animate-fadeIn">
                     <TransportHistory />
-                  )}
+                  </div>
+                )}
 
-                  {activeTab === 'fuel-purchase' && (
+                {activeTab === 'fuel-purchase' && (
+                  <div className="animate-fadeIn">
                     <FuelPurchaseHistory />
-                  )}
+                  </div>
+                )}
 
-                  {activeTab === 'fuel-records' && (
+                {activeTab === 'fuel-records' && (
+                  <div className="animate-fadeIn">
                     <FuelUseRecords />
-                  )}
+                  </div>
+                )}
 
-                  {activeTab === 'maintenance-schedule' && (
+                {activeTab === 'maintenance-schedule' && (
+                  <div className="animate-fadeIn">
                     <MaintenanceSchedule />
-                  )}
+                  </div>
+                )}
 
-                  {activeTab === 'service-history' && (
+                {activeTab === 'service-history' && (
+                  <div className="animate-fadeIn">
                     <ServiceHistory />
-                  )}
+                  </div>
+                )}
 
-                  {activeTab === 'billing' && (
+                {activeTab === 'billing' && (
+                  <div className="animate-fadeIn">
                     <BillingInvoice />
-                  )}
+                  </div>
+                )}
 
-                  {activeTab === 'reports' && (
-                    <div className="container-fluid p-4">
-                      <div className="alert alert-info">
-                        <h4><i className="bx bx-info-circle me-2"></i>Reports Module</h4>
-                        <p>Reports functionality is coming soon. This module will provide comprehensive reporting capabilities.</p>
-                      </div>
+                {activeTab === 'reports' && (
+                  <div className="p-6 bg-white rounded-2xl shadow-sm border border-slate-100 animate-fadeIn">
+                    <div className="flex items-center space-x-3 text-sky-600 mb-4">
+                      <i className="bx bx-info-circle text-2xl"></i>
+                      <h4 className="text-lg font-semibold m-0">Reports Module</h4>
                     </div>
-                  )}
+                    <p className="text-slate-600">Reports functionality is coming soon. This module will provide comprehensive reporting capabilities.</p>
+                  </div>
+                )}
 
-                  {activeTab === 'records' && (
-                    <div className="container-fluid p-4">
-                      <div className="alert alert-info">
-                        <h4><i className="bx bx-file me-2"></i>Records Module</h4>
-                        <p>Records management functionality is coming soon. This module will provide customizable record display capabilities.</p>
-                      </div>
+                {activeTab === 'records' && (
+                  <div className="p-6 bg-white rounded-2xl shadow-sm border border-slate-100 animate-fadeIn">
+                    <div className="flex items-center space-x-3 text-indigo-600 mb-4">
+                      <i className="bx bx-file text-2xl"></i>
+                      <h4 className="text-lg font-semibold m-0">Records Module</h4>
                     </div>
-                  )}
-                </Container>
+                    <p className="text-slate-600">Records management functionality is coming soon. This module will provide customizable record display capabilities.</p>
+                  </div>
+                )}
               </div>
-            </div>
-            
-            <VerificationSystem
-              show={showVerification}
-              onHide={() => setShowVerification(false)}
-              onVerificationComplete={handleVerificationComplete}
-            />
+            </main>
           </div>
+
+          <VerificationSystem
+            show={showVerification}
+            onHide={() => setShowVerification(false)}
+            onVerificationComplete={handleVerificationComplete}
+          />
+        </div>
       </TransportProvider>
     </MaintenanceProvider>
   );

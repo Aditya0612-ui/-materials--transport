@@ -1,20 +1,5 @@
 // src/components/maintenance/ServiceHistory.jsx
 import React, { useState } from 'react';
-import { 
-  Container, 
-  Row, 
-  Col, 
-  Card, 
-  Table, 
-  Button, 
-  Badge, 
-  Modal, 
-  Form, 
-  InputGroup,
-  Alert,
-  ListGroup,
-  Accordion
-} from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useMaintenanceContext } from '../../context/MaintenanceContext';
 import './MaintenanceStyles.css';
@@ -63,19 +48,19 @@ const ServiceHistory = () => {
   // Filter and sort service history
   const filteredHistory = serviceHistory
     .filter(item => {
-      const matchesSearch = 
+      const matchesSearch =
         item.vehicleId.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.vehicleName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.serviceType.toLowerCase().includes(searchTerm.toLowerCase());
-      
+
       const matchesStatus = filterStatus === 'all' || item.status === filterStatus;
-      
+
       return matchesSearch && matchesStatus;
     })
     .sort((a, b) => {
       let aValue = a[sortBy];
       let bValue = b[sortBy];
-      
+
       if (sortBy === 'serviceDate') {
         aValue = new Date(aValue);
         bValue = new Date(bValue);
@@ -83,7 +68,7 @@ const ServiceHistory = () => {
         aValue = parseFloat(aValue);
         bValue = parseFloat(bValue);
       }
-      
+
       if (sortOrder === 'asc') {
         return aValue > bValue ? 1 : -1;
       } else {
@@ -105,7 +90,7 @@ const ServiceHistory = () => {
         duration: service.duration || '',
         kmReading: service.kmReading ? service.kmReading.toString() : '',
         workDone: Array.isArray(service.workDone) ? service.workDone.join('\n') : (service.workDone || ''),
-        partsUsed: Array.isArray(service.partsUsed) 
+        partsUsed: Array.isArray(service.partsUsed)
           ? service.partsUsed.map(part => `${part.name || ''} - ${part.quantity || ''} - ₹${part.cost || 0}`).join('\n')
           : (service.partsUsed || ''),
         feedback: service.feedback || '',
@@ -148,9 +133,9 @@ const ServiceHistory = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
-    
+
     const kmReading = formData.kmReading ? parseInt(formData.kmReading) : 0;
-    
+
     const serviceData = {
       ...formData,
       cost: parseFloat(formData.cost),
@@ -193,11 +178,11 @@ const ServiceHistory = () => {
 
   const handleDeleteAll = async () => {
     const confirmMessage = `⚠️ WARNING: Delete All Service History Records?\n\nThis will permanently delete ALL ${serviceHistory.length} service history records from the database.\n\nThis action CANNOT be undone!\n\nAre you absolutely sure you want to proceed?`;
-    
+
     if (window.confirm(confirmMessage)) {
       // Double confirmation for safety
       const doubleConfirm = window.confirm('🚨 FINAL CONFIRMATION\n\nClick OK to permanently delete ALL service history records.\nClick Cancel to abort.');
-      
+
       if (doubleConfirm) {
         try {
           const result = await deleteAllServiceHistory();
@@ -216,19 +201,23 @@ const ServiceHistory = () => {
 
   const getStatusBadge = (status) => {
     const statusColors = {
-      'Completed': 'success',
-      'In Progress': 'warning',
-      'Cancelled': 'danger'
+      'Completed': 'bg-emerald-100 text-emerald-700 border-emerald-200',
+      'In Progress': 'bg-amber-100 text-amber-700 border-amber-200',
+      'Cancelled': 'bg-red-100 text-red-700 border-red-200'
     };
-    return <Badge bg={statusColors[status] || 'secondary'}>{status}</Badge>;
+    return (
+      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${statusColors[status] || 'bg-slate-100 text-slate-700 border-slate-200'}`}>
+        {status}
+      </span>
+    );
   };
 
   const getRatingStars = (rating) => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
       stars.push(
-        <i 
-          key={i} 
+        <i
+          key={i}
           className={`bx ${i <= rating ? 'bxs-star' : 'bx-star'}`}
           style={{ color: i <= rating ? '#ffc107' : '#dee2e6' }}
         ></i>
@@ -238,418 +227,493 @@ const ServiceHistory = () => {
   };
 
   return (
-    <Container fluid className="service-history-container">
-      <Row className="mb-4">
-        <Col>
-          <div className="d-flex justify-content-between align-items-center">
-            <div>
-              <h2 className="mb-0">
-                <i className="bx bx-file me-2"></i>
-                {t('serviceHistory.title')}
-              </h2>
-              <p className="text-muted mb-0">{t('serviceHistory.subtitle')}</p>
-            </div>
-            <Button 
-              variant="success" 
-              onClick={() => handleShowModal()}
-              className="d-flex align-items-center"
-            >
-              <i className="bx bx-plus me-2"></i>
-              {t('serviceHistory.addRecord')}
-            </Button>
-          </div>
-        </Col>
-      </Row>
+    <div className="p-6 space-y-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
+            <i className="bx bx-file text-emerald-600"></i>
+            {t('serviceHistory.title')}
+          </h2>
+          <p className="text-slate-500 mt-1">{t('serviceHistory.subtitle')}</p>
+        </div>
+        <button
+          onClick={() => handleShowModal()}
+          className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors shadow-sm"
+        >
+          <i className="bx bx-plus text-xl"></i>
+          {t('serviceHistory.addRecord')}
+        </button>
+      </div>
 
       {/* Error Alert */}
       {error && (
-        <Row className="mb-4">
-          <Col>
-            <Alert variant="danger" dismissible onClose={() => setError(null)}>
-              <Alert.Heading>Error</Alert.Heading>
-              {error}
-            </Alert>
-          </Col>
-        </Row>
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <i className="bx bx-error-circle text-xl"></i>
+            <span>{error}</span>
+          </div>
+          <button onClick={() => setError(null)} className="text-red-500 hover:text-red-700">
+            <i className="bx bx-x text-xl"></i>
+          </button>
+        </div>
       )}
 
       {/* Filters and Search */}
-      <Row className="mb-4">
-        <Col md={6}>
-          <InputGroup>
-            <InputGroup.Text>
-              <i className="bx bx-search"></i>
-            </InputGroup.Text>
-            <Form.Control
-              type="text"
-              placeholder={t('serviceHistory.searchPlaceholder')}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </InputGroup>
-        </Col>
-        <Col md={2}>
-          <Form.Select
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-          >
-            <option value="all">{t('serviceHistory.allStatus')}</option>
-            <option value="Completed">{t('serviceHistory.completed')}</option>
-            <option value="In Progress">{t('serviceHistory.inProgress')}</option>
-            <option value="Cancelled">{t('serviceHistory.cancelled')}</option>
-          </Form.Select>
-        </Col>
-        <Col md={2}>
-          <Form.Select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-          >
-            <option value="serviceDate">{t('serviceHistory.sortByDate')}</option>
-            <option value="cost">{t('serviceHistory.sortByCost')}</option>
-            <option value="rating">{t('serviceHistory.sortByRating')}</option>
-            <option value="vehicleName">{t('serviceHistory.sortByVehicle')}</option>
-          </Form.Select>
-        </Col>
-        <Col md={2}>
-          <Button
-            variant="outline-secondary"
-            onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-            className="w-100"
-          >
-            <i className={`bx bx-sort-${sortOrder === 'asc' ? 'up' : 'down'}`}></i>
-            {sortOrder === 'asc' ? t('common.ascending') : t('common.descending')}
-          </Button>
-        </Col>
-      </Row>
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="lg:col-span-1">
+            <div className="relative">
+              <i className="bx bx-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl"></i>
+              <input
+                type="text"
+                placeholder={t('serviceHistory.searchPlaceholder')}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 h-12 bg-slate-50 border border-slate-200 rounded-lg text-base text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                style={{ color: '#1e293b' }}
+              />
+            </div>
+          </div>
+          <div>
+            <select
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+              className="w-full px-4 h-12 bg-slate-50 border border-slate-200 rounded-lg text-base text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+              style={{ color: '#1e293b' }}
+            >
+              <option value="all">{t('serviceHistory.allStatus')}</option>
+              <option value="Completed">{t('serviceHistory.completed')}</option>
+              <option value="In Progress">{t('serviceHistory.inProgress')}</option>
+              <option value="Cancelled">{t('serviceHistory.cancelled')}</option>
+            </select>
+          </div>
+          <div>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="w-full px-4 h-12 bg-slate-50 border border-slate-200 rounded-lg text-base text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+              style={{ color: '#1e293b' }}
+            >
+              <option value="serviceDate">{t('serviceHistory.sortByDate')}</option>
+              <option value="cost">{t('serviceHistory.sortByCost')}</option>
+              <option value="rating">{t('serviceHistory.sortByRating')}</option>
+              <option value="vehicleName">{t('serviceHistory.sortByVehicle')}</option>
+            </select>
+          </div>
+          <div>
+            <button
+              onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+              className="w-full px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg transition-colors border border-slate-200 flex items-center justify-center gap-2"
+            >
+              <i className={`bx bx-sort-${sortOrder === 'asc' ? 'up' : 'down'} text-xl`}></i>
+              {sortOrder === 'asc' ? t('common.ascending') : t('common.descending')}
+            </button>
+          </div>
+        </div>
+      </div>
 
       {/* Service History Table */}
-      <Card className="border-0 shadow-sm">
-        <Card.Header className="bg-white border-bottom">
-          <h5 className="mb-0">
-            <i className="bx bx-history me-2"></i>
-            {t('serviceHistory.serviceRecords')} ({filteredHistory.length})
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+        <div className="p-4 border-b border-slate-100 bg-slate-50/50">
+          <h5 className="font-semibold text-slate-800 flex items-center gap-2">
+            <i className="bx bx-history text-emerald-600"></i>
+            {t('serviceHistory.serviceRecords')}
+            <span className="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full text-xs">
+              {filteredHistory.length}
+            </span>
           </h5>
-        </Card.Header>
-        <Card.Body>
-          <div className="table-responsive">
-            <Table responsive striped hover>
-              <thead>
-                <tr>
-                  <th>{t('serviceHistory.vehicle')}</th>
-                  <th>{t('serviceHistory.serviceDetails')}</th>
-                  <th>{t('serviceHistory.dateDuration')}</th>
-                  <th>{t('serviceHistory.cost')}</th>
-                  <th>{t('serviceHistory.rating')}</th>
-                  <th>{t('serviceHistory.status')}</th>
-                  <th>{t('common.actions')}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredHistory.length > 0 ? (
-                  filteredHistory.map((service, index) => (
-                  <tr key={`${service.id}-${index}`}>
-                    <td>
+        </div>
+        <div className="overflow-x-auto scrollbar-white">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-slate-50 border-b border-slate-100 text-sm uppercase text-slate-700 font-semibold tracking-wider">
+                <th className="px-6 py-4">{t('serviceHistory.vehicle')}</th>
+                <th className="px-6 py-4">{t('serviceHistory.serviceDetails')}</th>
+                <th className="px-6 py-4">{t('serviceHistory.dateDuration')}</th>
+                <th className="px-6 py-4">{t('serviceHistory.cost')}</th>
+                <th className="px-6 py-4">{t('serviceHistory.rating')}</th>
+                <th className="px-6 py-4">{t('serviceHistory.status')}</th>
+                <th className="px-6 py-4 text-right">{t('common.actions')}</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-50">
+              {filteredHistory.length > 0 ? (
+                filteredHistory.map((service, index) => (
+                  <tr key={`${service.id}-${index}`} className="hover:bg-slate-50/50 transition-colors">
+                    <td className="px-6 py-4">
                       <div>
-                        <strong>{service.vehicleId}</strong>
-                        <br />
-                        <small className="text-muted">{service.vehicleName}</small>
+                        <div className="font-bold text-slate-800 text-base">{service.vehicleId}</div>
+                        <div className="text-base text-slate-500">{service.vehicleName}</div>
                       </div>
                     </td>
-                    <td>
-                      <div>
-                        <strong>{service.serviceType}</strong>
-                        <br />
-                        <small className="text-muted">{service.serviceCenter}</small>
-                        <br />
-                        <small className="text-info">{service.technician}</small>
+                    <td className="px-6 py-4">
+                      <div className="space-y-1">
+                        <div className="font-medium text-slate-800 text-base">{service.serviceType}</div>
+                        <div className="text-sm text-slate-500">{service.serviceCenter}</div>
+                        <div className="text-sm text-blue-600">{service.technician}</div>
                       </div>
                     </td>
-                    <td>
+                    <td className="px-6 py-4">
                       <div>
-                        <strong>{new Date(service.serviceDate).toLocaleDateString()}</strong>
-                        <br />
-                        <small className="text-muted">{service.kmReading?.toLocaleString()} km</small>
-                        <br />
-                        <small className="text-info">{service.duration}</small>
+                        <div className="font-medium text-slate-800 text-base">{new Date(service.serviceDate).toLocaleDateString()}</div>
+                        <div className="text-base text-slate-500">{service.kmReading?.toLocaleString()} km</div>
+                        <div className="text-sm text-blue-600 mt-1">{service.duration}</div>
                       </div>
                     </td>
-                    <td>
-                      <strong>{formatCurrency(service.cost)}</strong>
+                    <td className="px-6 py-4">
+                      <div className="font-bold text-emerald-600 text-base">{formatCurrency(service.cost)}</div>
                     </td>
-                    <td>
-                      <div className="d-flex align-items-center">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center">
                         {getRatingStars(service.rating)}
-                        <small className="ms-2">({service.rating})</small>
+                        <span className="ml-2 text-sm text-slate-500">({service.rating})</span>
                       </div>
                     </td>
-                    <td>
+                    <td className="px-6 py-4">
                       {getStatusBadge(service.status)}
                     </td>
-                    <td>
-                      <div className="d-flex gap-2">
-                        <Button
-                          variant="outline-info"
-                          size="sm"
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex justify-end gap-2">
+                        <button
                           onClick={() => handleShowDetails(service)}
+                          className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-all"
                           title="View Details"
                         >
-                          <i className="bx bx-show"></i>
-                        </Button>
-                        <Button
-                          variant="outline-primary"
-                          size="sm"
+                          <i className="bx bx-show text-lg"></i>
+                        </button>
+                        <button
                           onClick={() => handleShowModal(service)}
+                          className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-all"
                           title="Edit Service"
                         >
-                          <i className="bx bx-edit"></i>
-                        </Button>
-                        <Button
-                          variant="outline-danger"
-                          size="sm"
+                          <i className="bx bx-edit text-lg"></i>
+                        </button>
+                        <button
                           onClick={() => handleDelete(service.id)}
+                          className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-all"
                           title="Delete Service"
                         >
-                          <i className="bx bx-trash"></i>
-                        </Button>
+                          <i className="bx bx-trash text-lg"></i>
+                        </button>
                       </div>
                     </td>
                   </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="7" className="text-center py-5">
-                      <i className="bx bx-file-blank display-1 text-muted"></i>
-                      <h5 className="mt-3 text-muted">No service records found</h5>
-                      <p className="text-muted">Click "Add Service Record" to add your first service record.</p>
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </Table>
-          </div>
-        </Card.Body>
-      </Card>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="7" className="text-center py-12">
+                    <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <i className="bx bx-file-blank text-3xl text-slate-300"></i>
+                    </div>
+                    <h5 className="text-slate-600 font-medium mb-1">No service records found</h5>
+                    <p className="text-slate-400 text-sm">Click "Add Service Record" to add your first service record.</p>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
 
       {/* Service Details Modal */}
-      <Modal show={showDetailsModal} onHide={() => setShowDetailsModal(false)} size="lg">
-        <Modal.Header closeButton>
-          <Modal.Title>
-            <i className="bx bx-file-blank me-2"></i>
-            {t('serviceHistory.serviceDetailsTitle')} - {selectedService?.invoiceNumber}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {selectedService && (
-            <Row>
-              <Col md={6}>
-                <Card className="border-0 bg-light">
-                  <Card.Body>
-                    <h6 className="text-primary">{t('serviceHistory.vehicleInformation')}</h6>
-                    <p><strong>{t('serviceHistory.vehicleId')}:</strong> {selectedService.vehicleId}</p>
-                    <p><strong>{t('serviceHistory.vehicleName')}:</strong> {selectedService.vehicleName}</p>
-                    <p><strong>{t('serviceHistory.kmReading')}:</strong> {selectedService.kmReading?.toLocaleString()} km</p>
-                  </Card.Body>
-                </Card>
-              </Col>
-              <Col md={6}>
-                <Card className="border-0 bg-light">
-                  <Card.Body>
-                    <h6 className="text-primary">{t('serviceHistory.serviceInformation')}</h6>
-                    <p><strong>{t('serviceHistory.serviceType')}:</strong> {selectedService.serviceType}</p>
-                    <p><strong>{t('serviceHistory.serviceDate')}:</strong> {new Date(selectedService.serviceDate).toLocaleDateString()}</p>
-                    <p><strong>{t('serviceHistory.duration')}:</strong> {selectedService.duration}</p>
-                    <p><strong>{t('serviceHistory.cost')}:</strong> {formatCurrency(selectedService.cost)}</p>
-                  </Card.Body>
-                </Card>
-              </Col>
-              <Col md={12} className="mt-3">
-                <Card className="border-0 bg-light">
-                  <Card.Body>
-                    <h6 className="text-primary">{t('serviceHistory.serviceFeedback')}</h6>
-                    <div className="d-flex align-items-center mb-2">
-                      <span className="me-2">{t('serviceHistory.rating')}:</span>
-                      {getRatingStars(selectedService.rating)}
-                      <span className="ms-2">({selectedService.rating}/5)</span>
+      {showDetailsModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-3xl">
+            <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+              <h3 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+                <i className="bx bx-file-blank text-emerald-600"></i>
+                {t('serviceHistory.serviceDetailsTitle')} - {selectedService?.invoiceNumber}
+              </h3>
+              <button
+                onClick={() => setShowDetailsModal(false)}
+                className="text-slate-400 hover:text-slate-600 transition-colors"
+              >
+                <i className="bx bx-x text-2xl"></i>
+              </button>
+            </div>
+
+            <div className="p-6">
+              {selectedService && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="bg-slate-50 rounded-xl p-4 border border-slate-100">
+                    <h6 className="font-semibold text-emerald-600 mb-3 border-b border-slate-200 pb-2">
+                      {t('serviceHistory.vehicleInformation')}
+                    </h6>
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-slate-500 text-sm">{t('serviceHistory.vehicleId')}:</span>
+                        <span className="font-medium text-slate-800">{selectedService.vehicleId}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-500 text-sm">{t('serviceHistory.vehicleName')}:</span>
+                        <span className="font-medium text-slate-800">{selectedService.vehicleName}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-500 text-sm">{t('serviceHistory.kmReading')}:</span>
+                        <span className="font-medium text-slate-800">{selectedService.kmReading?.toLocaleString()} km</span>
+                      </div>
                     </div>
-                    <p className="mb-0">{selectedService.feedback}</p>
-                  </Card.Body>
-                </Card>
-              </Col>
-            </Row>
-          )}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowDetailsModal(false)}>
-            {t('common.close')}
-          </Button>
-        </Modal.Footer>
-      </Modal>
+                  </div>
+
+                  <div className="bg-slate-50 rounded-xl p-4 border border-slate-100">
+                    <h6 className="font-semibold text-emerald-600 mb-3 border-b border-slate-200 pb-2">
+                      {t('serviceHistory.serviceInformation')}
+                    </h6>
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-slate-500 text-sm">{t('serviceHistory.serviceType')}:</span>
+                        <span className="font-medium text-slate-800">{selectedService.serviceType}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-500 text-sm">{t('serviceHistory.serviceDate')}:</span>
+                        <span className="font-medium text-slate-800">{new Date(selectedService.serviceDate).toLocaleDateString()}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-500 text-sm">{t('serviceHistory.duration')}:</span>
+                        <span className="font-medium text-slate-800">{selectedService.duration}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-500 text-sm">{t('serviceHistory.cost')}:</span>
+                        <span className="font-bold text-emerald-600">{formatCurrency(selectedService.cost)}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="md:col-span-2 bg-slate-50 rounded-xl p-4 border border-slate-100">
+                    <h6 className="font-semibold text-emerald-600 mb-3 border-b border-slate-200 pb-2">
+                      {t('serviceHistory.serviceFeedback')}
+                    </h6>
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2">
+                        <span className="text-slate-500 text-sm">{t('serviceHistory.rating')}:</span>
+                        <div className="flex items-center">
+                          {getRatingStars(selectedService.rating)}
+                          <span className="ml-2 text-sm font-medium text-slate-700">({selectedService.rating}/5)</span>
+                        </div>
+                      </div>
+                      <div>
+                        <span className="text-slate-500 text-sm block mb-1">Feedback:</span>
+                        <p className="text-slate-800 bg-white p-3 rounded-lg border border-slate-200 text-sm">
+                          {selectedService.feedback || 'No feedback provided.'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="p-6 border-t border-slate-100 bg-slate-50/50 flex justify-end rounded-b-2xl">
+              <button
+                onClick={() => setShowDetailsModal(false)}
+                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium rounded-lg transition-colors"
+              >
+                {t('common.close')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Add/Edit Service Modal */}
-      <Modal show={showModal} onHide={() => setShowModal(false)} size="lg">
-        <Modal.Header closeButton>
-          <Modal.Title>
-            <i className="bx bx-plus me-2"></i>
-            {editingService ? t('serviceHistory.editRecord') : t('serviceHistory.addNewRecord')}
-          </Modal.Title>
-        </Modal.Header>
-        <Form onSubmit={handleSubmit}>
-          <Modal.Body>
-            <Row>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>{t('serviceHistory.vehicleId')} *</Form.Label>
-                  <Form.Control
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+              <h3 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+                <i className="bx bx-plus text-emerald-600"></i>
+                {editingService ? t('serviceHistory.editRecord') : t('serviceHistory.addNewRecord')}
+              </h3>
+              <button
+                onClick={() => setShowModal(false)}
+                className="text-slate-400 hover:text-slate-600 transition-colors"
+              >
+                <i className="bx bx-x text-2xl"></i>
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="p-6 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700">
+                    {t('serviceHistory.vehicleId')} *
+                  </label>
+                  <input
                     type="text"
                     name="vehicleId"
                     value={formData.vehicleId}
                     onChange={handleInputChange}
+                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                     required
                   />
-                </Form.Group>
-              </Col>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>{t('serviceHistory.vehicleName')} *</Form.Label>
-                  <Form.Control
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700">
+                    {t('serviceHistory.vehicleName')} *
+                  </label>
+                  <input
                     type="text"
                     name="vehicleName"
                     value={formData.vehicleName}
                     onChange={handleInputChange}
+                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                     required
                   />
-                </Form.Group>
-              </Col>
-            </Row>
-            <Row>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>{t('serviceHistory.serviceDate')} *</Form.Label>
-                  <Form.Control
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700">
+                    {t('serviceHistory.serviceDate')} *
+                  </label>
+                  <input
                     type="date"
                     name="serviceDate"
                     value={formData.serviceDate}
                     onChange={handleInputChange}
+                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                     required
                   />
-                </Form.Group>
-              </Col>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>{t('serviceHistory.serviceType')} *</Form.Label>
-                  <Form.Control
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700">
+                    {t('serviceHistory.serviceType')} *
+                  </label>
+                  <input
                     type="text"
                     name="serviceType"
                     value={formData.serviceType}
                     onChange={handleInputChange}
+                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                     required
                   />
-                </Form.Group>
-              </Col>
-            </Row>
-            <Row>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>{t('serviceHistory.cost')} (₹) *</Form.Label>
-                  <Form.Control
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700">
+                    {t('serviceHistory.cost')} (₹) *
+                  </label>
+                  <input
                     type="number"
                     name="cost"
                     value={formData.cost}
                     onChange={handleInputChange}
+                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                     required
                   />
-                </Form.Group>
-              </Col>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>{t('serviceHistory.kmReading')}</Form.Label>
-                  <Form.Control
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700">
+                    {t('serviceHistory.kmReading')}
+                  </label>
+                  <input
                     type="number"
                     name="kmReading"
                     value={formData.kmReading}
                     onChange={handleInputChange}
+                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                   />
-                </Form.Group>
-              </Col>
-            </Row>
-            <Row>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>{t('serviceHistory.serviceCenter')}</Form.Label>
-                  <Form.Control
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700">
+                    {t('serviceHistory.serviceCenter')}
+                  </label>
+                  <input
                     type="text"
                     name="serviceCenter"
                     value={formData.serviceCenter}
                     onChange={handleInputChange}
+                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                   />
-                </Form.Group>
-              </Col>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>{t('serviceHistory.technician')}</Form.Label>
-                  <Form.Control
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700">
+                    {t('serviceHistory.technician')}
+                  </label>
+                  <input
                     type="text"
                     name="technician"
                     value={formData.technician}
                     onChange={handleInputChange}
+                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                   />
-                </Form.Group>
-              </Col>
-            </Row>
-            <Row>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>{t('serviceHistory.duration')}</Form.Label>
-                  <Form.Control
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700">
+                    {t('serviceHistory.duration')}
+                  </label>
+                  <input
                     type="text"
                     name="duration"
                     value={formData.duration}
                     onChange={handleInputChange}
                     placeholder="e.g., 2 hours"
+                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                   />
-                </Form.Group>
-              </Col>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>{t('serviceHistory.ratingLabel')}</Form.Label>
-                  <Form.Select
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700">
+                    {t('serviceHistory.ratingLabel')}
+                  </label>
+                  <select
                     name="rating"
                     value={formData.rating}
                     onChange={handleInputChange}
+                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                   >
                     <option value="1">1 Star</option>
                     <option value="2">2 Stars</option>
                     <option value="3">3 Stars</option>
                     <option value="4">4 Stars</option>
                     <option value="5">5 Stars</option>
-                  </Form.Select>
-                </Form.Group>
-              </Col>
-            </Row>
-            <Form.Group className="mb-3">
-              <Form.Label>{t('serviceHistory.feedback')}</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={2}
-                name="feedback"
-                value={formData.feedback}
-                onChange={handleInputChange}
-                placeholder={t('serviceHistory.feedbackPlaceholder')}
-              />
-            </Form.Group>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowModal(false)}>
-              {t('common.cancel')}
-            </Button>
-            <Button variant="success" type="submit">
-              <i className="bx bx-save me-2"></i>
-              {editingService ? t('serviceHistory.updateRecord') : t('serviceHistory.addRecordButton')}
-            </Button>
-          </Modal.Footer>
-        </Form>
-      </Modal>
-    </Container>
+                  </select>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-700">
+                  {t('serviceHistory.feedback')}
+                </label>
+                <textarea
+                  rows={2}
+                  name="feedback"
+                  value={formData.feedback}
+                  onChange={handleInputChange}
+                  placeholder={t('serviceHistory.feedbackPlaceholder')}
+                  className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                />
+              </div>
+
+              <div className="pt-4 border-t border-slate-100 flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowModal(false)}
+                  className="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium hover:bg-slate-100 rounded-lg transition-colors"
+                >
+                  {t('common.cancel')}
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg shadow-sm shadow-emerald-200 transition-all flex items-center gap-2"
+                >
+                  <i className="bx bx-save"></i>
+                  {editingService ? t('serviceHistory.updateRecord') : t('serviceHistory.addRecordButton')}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 

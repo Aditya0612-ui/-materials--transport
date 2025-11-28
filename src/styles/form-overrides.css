@@ -1,0 +1,263 @@
+/* ========================================
+   COMPREHENSIVE FORM CONTROL VISIBILITY FIX
+   Applied globally to ALL admin pages
+   ======================================== */
+
+/* === ALL INPUT TYPES === */
+input,
+textarea,
+select,
+.form-control,
+.form-select,
+.form-control-lg,
+.form-select-lg,
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"],
+input[type="tel"],
+input[type="url"],
+input[type="search"] {
+    min-height: 48px !important;
+    height: 48px !important;
+    font-size: 15px !important;
+    line-height: 1.5 !important;
+    padding: 0.5rem 1rem !important;
+    color: #1e293b !important;
+    /* Dark slate - always visible */
+    background-color: #f8fafc !important;
+    /* Light background */
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 0.5rem !important;
+}
+
+/* === TEXTAREA SPECIFIC === */
+textarea,
+textarea.form-control {
+    min-height: 120px !important;
+    height: auto !important;
+    padding: 0.75rem 1rem !important;
+    resize: vertical !important;
+}
+
+/* === SELECT DROPDOWNS === */
+select,
+.form-select,
+select.form-control {
+    cursor: pointer !important;
+    appearance: auto !important;
+    -webkit-appearance: menulist !important;
+    -moz-appearance: menulist !important;
+}
+
+/* === DROPDOWN OPTIONS === */
+select option,
+.form-select option,
+select.form-control option {
+    font-size: 15px !important;
+    color: #1e293b !important;
+    background-color: white !important;
+    padding: 10px !important;
+    line-height: 1.5 !important;
+}
+
+/* === INPUT GROUPS === */
+.input-group input,
+.input-group select,
+.input-group .form-control,
+.input-group .form-select {
+    color: #1e293b !important;
+}
+
+.input-group-text {
+    min-height: 48px !important;
+    height: 48px !important;
+    font-size: 15px !important;
+    color: #475569 !important;
+    background-color: #f1f5f9 !important;
+    border: 1px solid #cbd5e1 !important;
+}
+
+/* === PLACEHOLDER TEXT === */
+input::placeholder,
+textarea::placeholder,
+select::placeholder,
+.form-control::placeholder {
+    color: #94a3b8 !important;
+    opacity: 0.7 !important;
+}
+
+/* === FOCUS STATES === */
+input:focus,
+textarea:focus,
+select:focus,
+.form-control:focus,
+.form-select:focus {
+    color: #0f172a !important;
+    /* Even darker on focus */
+    background-color: white !important;
+    border-color: #10b981 !important;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+    outline: none !important;
+}
+
+/* === DISABLED STATES === */
+input:disabled,
+textarea:disabled,
+select:disabled,
+.form-control:disabled,
+.form-select:disabled {
+    color: #64748b !important;
+    background-color: #e2e8f0 !important;
+    cursor: not-allowed !important;
+    opacity: 0.6 !important;
+}
+
+/* === DATE/TIME INPUTS === */
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"] {
+    color-scheme: light !important;
+    padding-right: 0.5rem !important;
+}
+
+/* Ensure date picker icon is visible */
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
+    filter: invert(0.5) !important;
+    cursor: pointer !important;
+}
+
+/* === MODAL FORM CONTROLS === */
+.modal input,
+.modal textarea,
+.modal select,
+.modal .form-control,
+.modal .form-select {
+    color: #1e293b !important;
+    background-color: #f8fafc !important;
+}
+
+/* === CARD FORM CONTROLS === */
+.card input,
+.card textarea,
+.card select,
+.card .form-control,
+.card .form-select {
+    color: #1e293b !important;
+    background-color: #f8fafc !important;
+}
+
+/* === BOOTSTRAP SPECIFIC OVERRIDES === */
+.form-control,
+.form-select {
+    display: block !important;
+    width: 100% !important;
+    font-weight: 400 !important;
+}
+
+/* === REACT-BOOTSTRAP OVERRIDES === */
+.form-control-lg {
+    min-height: 48px !important;
+    padding: 0.5rem 1rem !important;
+    font-size: 15px !important;
+}
+
+/* === SEARCH INPUTS === */
+input[type="search"] {
+    -webkit-appearance: none !important;
+    appearance: none !important;
+}
+
+/* === NUMBER INPUT ARROWS === */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    opacity: 1 !important;
+}
+
+/* === AUTOFILL STYLES === */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-text-fill-color: #1e293b !important;
+    -webkit-box-shadow: 0 0 0 30px #f8fafc inset !important;
+    box-shadow: 0 0 0 30px #f8fafc inset !important;
+    transition: background-color 5000s ease-in-out 0s !important;
+}
+
+/* === LABELS === */
+label,
+.form-label,
+.form-check-label {
+    color: #334155 !important;
+    font-weight: 500 !important;
+    font-size: 14px !important;
+    margin-bottom: 0.5rem !important;
+}
+
+/* === CHECKBOX AND RADIO === */
+input[type="checkbox"],
+input[type="radio"] {
+    width: 18px !important;
+    height: 18px !important;
+    min-height: 18px !important;
+    cursor: pointer !important;
+}
+
+/* === FILE INPUTS === */
+input[type="file"] {
+    height: auto !important;
+    padding: 0.5rem !important;
+}
+
+/* === READONLY INPUTS === */
+input[readonly],
+textarea[readonly],
+select[readonly] {
+    background-color: #f1f5f9 !important;
+    color: #475569 !important;
+    cursor: default !important;
+}
+
+/* === VALIDATION STATES === */
+.is-invalid,
+input.is-invalid,
+select.is-invalid {
+    border-color: #ef4444 !important;
+    color: #1e293b !important;
+}
+
+.is-valid,
+input.is-valid,
+select.is-valid {
+    border-color: #10b981 !important;
+    color: #1e293b !important;
+}
+
+/* === TAILWIND FORM CONTROLS === */
+.bg-slate-50 input,
+.bg-slate-50 select,
+.bg-slate-50 textarea {
+    color: #1e293b !important;
+}
+
+/* === ENSURE VISIBILITY IN ALL CONTAINERS === */
+div input,
+div select,
+div textarea,
+form input,
+form select,
+form textarea {
+    color: #1e293b !important;
+}
+
+/* === IMPORTANT: Override any conflicting styles === */
+* input,
+* select,
+* textarea {
+    color: #1e293b !important;
+}

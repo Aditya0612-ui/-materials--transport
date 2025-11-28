@@ -1,6 +1,5 @@
 // src/components/layout/EnhancedSidebar.jsx
 import React, { useState, useEffect } from 'react';
-import { Nav, Button, Badge, Collapse, Form, InputGroup } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import 'boxicons/css/boxicons.min.css';
 
@@ -115,10 +114,23 @@ const EnhancedSidebar = ({
   });
 
   const toggleMenu = (menuId) => {
-    setExpandedMenus(prev => ({
-      ...prev,
-      [menuId]: !prev[menuId]
-    }));
+    // If sidebar is collapsed, expand it first
+    if (sidebarCollapsed) {
+      setSidebarCollapsed(false);
+      // Then expand the menu after a short delay
+      setTimeout(() => {
+        setExpandedMenus(prev => ({
+          ...prev,
+          [menuId]: true
+        }));
+      }, 100);
+    } else {
+      // If sidebar is already expanded, just toggle the menu
+      setExpandedMenus(prev => ({
+        ...prev,
+        [menuId]: !prev[menuId]
+      }));
+    }
   };
 
   const handleMenuClick = (itemId) => {
@@ -131,7 +143,7 @@ const EnhancedSidebar = ({
     });
 
     // Close sidebar on mobile after clicking a menu item
-    if (window.innerWidth < 992) {
+    if (window.innerWidth < 1024) {
       setSidebarCollapsed(true);
     }
   };
@@ -152,191 +164,161 @@ const EnhancedSidebar = ({
       const hasActiveChild = item.children.some(child => child.id === activeTab);
 
       return (
-        <div key={item.id} className="sidebar-group">
+        <div key={item.id} className="mb-1">
           <div
-            className={`sidebar-group-header ${isExpanded ? 'expanded' : ''} ${hasActiveChild ? 'has-active' : ''}`}
+            className={`
+              flex items-center px-4 py-3 mx-2 rounded-xl cursor-pointer transition-all duration-200
+              ${hasActiveChild ? 'bg-emerald-50 text-emerald-700 font-medium' : 'text-slate-600 hover:bg-slate-50 hover:text-emerald-600'}
+              ${sidebarCollapsed ? 'justify-center' : ''}
+            `}
             onClick={() => toggleMenu(item.id)}
+            title={sidebarCollapsed ? `${item.label} - Click to expand` : ''}
           >
-            <div className="d-flex align-items-center">
-              <i className={`sidebar-icon ${item.icon}`}></i>
-              {!sidebarCollapsed && (
-                <>
-                  <span className="sidebar-label">{item.label}</span>
-                  <i className={`expand-arrow bx ${isExpanded ? 'bx-chevron-up' : 'bx-chevron-down'}`}></i>
-                </>
-              )}
-            </div>
+            <i className={`${item.icon} text-xl w-6 text-center ${sidebarCollapsed ? '' : 'mr-3'}`}></i>
+            {!sidebarCollapsed && (
+              <>
+                <span className="flex-1 text-sm whitespace-nowrap">{item.label}</span>
+                <i className={`bx ${isExpanded ? 'bx-chevron-up' : 'bx-chevron-down'} text-lg transition-transform duration-200`}></i>
+              </>
+            )}
           </div>
-          <Collapse in={isExpanded && !sidebarCollapsed}>
-            <div className="sidebar-submenu">
+
+          <div
+            className={`overflow-hidden transition-all duration-300 ease-in-out ${isExpanded && !sidebarCollapsed ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}
+          >
+            <div className="ml-4 border-l-2 border-slate-100 my-1">
               {item.children.map(child => (
-                <Nav.Link
+                <div
                   key={child.id}
-                  className={`sidebar-item submenu-item ${activeTab === child.id ? 'active' : ''}`}
+                  className={`
+                    flex items-center px-4 py-2.5 mx-2 rounded-lg cursor-pointer transition-all duration-200 text-sm
+                    ${activeTab === child.id
+                      ? 'bg-emerald-600 text-white shadow-md shadow-emerald-200'
+                      : 'text-slate-500 hover:bg-slate-50 hover:text-emerald-600'}
+                  `}
                   onClick={() => handleMenuClick(child.id)}
                   title={sidebarCollapsed ? child.label : ''}
                 >
-                  <i className={`sidebar-icon ${child.icon}`}></i>
-                  {!sidebarCollapsed && (
-                    <>
-                      <span className="sidebar-label">
-                        {child.label}
-                      </span>
-                    </>
-                  )}
-                </Nav.Link>
+                  <i className={`${child.icon} text-lg w-6 text-center mr-2`}></i>
+                  <span className="truncate whitespace-nowrap">{child.label}</span>
+                </div>
               ))}
             </div>
-          </Collapse>
+          </div>
         </div>
       );
     }
 
     return (
-      <Nav.Link
+      <div
         key={item.id}
-        className={`sidebar-item ${activeTab === item.id ? 'active' : ''}`}
+        className={`
+          flex items-center px-4 py-3 mx-2 mb-1 rounded-xl cursor-pointer transition-all duration-200
+          ${activeTab === item.id
+            ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-200'
+            : 'text-slate-600 hover:bg-slate-50 hover:text-emerald-600'}
+        `}
         onClick={() => handleMenuClick(item.id)}
         title={sidebarCollapsed ? item.label : ''}
       >
-        <i className={`sidebar-icon ${item.icon}`}></i>
+        <i className={`${item.icon} text-xl w-6 text-center mr-3`}></i>
         {!sidebarCollapsed && (
-          <>
-            <span className="sidebar-label">
-              {item.label}
-            </span>
-          </>
+          <span className="flex-1 text-sm font-medium whitespace-nowrap">{item.label}</span>
         )}
-      </Nav.Link>
+      </div>
     );
   };
 
   return (
-    <>
-      <div 
-        className={`sidebar enhanced-sidebar ${sidebarCollapsed ? 'collapsed' : 'expanded'} 
-          fixed lg:static inset-y-0 left-0 z-[1000] transform transition-transform duration-300 ease-in-out
-          ${sidebarCollapsed ? '-translate-x-full lg:translate-x-0' : 'translate-x-0'}`}
-      >
-        {/* Sidebar Header */}
-        <div className="sidebar-header">
-          <div className="d-flex align-items-center justify-content-between">
-            {!sidebarCollapsed && (
-              <div className="sidebar-brand">
-                <div className="d-flex align-items-center">
-                  <i className="bx bx-car brand-icon me-2"></i>
-                  <div>
-                    <h6 className="mb-0">Construction Materials & Transport </h6>
-                  </div>
-                </div>
-              </div>
-            )}
-            <Button
-              variant="link"
-              className="sidebar-toggle"
-              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-            >
-              <i className={`bx ${sidebarCollapsed ? 'bx-menu' : 'bx-x'}`}></i>
-            </Button>
-          </div>
-        </div>
-
-        {/* Search Bar */}
+    <aside
+      className={`
+        fixed inset-y-0 left-0 z-50 bg-white border-r border-slate-100 shadow-xl lg:shadow-none lg:static transition-all duration-300 ease-in-out flex flex-col flex-shrink-0
+        ${sidebarCollapsed ? 'w-[0px] lg:w-20 -translate-x-full lg:translate-x-0' : 'w-72 translate-x-0'}
+      `}
+    >
+      {/* Sidebar Header */}
+      <div className="h-16 flex items-center justify-between px-4 border-b border-slate-100 bg-white/50 backdrop-blur-sm">
         {!sidebarCollapsed && (
-          <div className="sidebar-search p-3">
-            <InputGroup size="sm">
-              <InputGroup.Text>
-                <i className="bx bx-search"></i>
-              </InputGroup.Text>
-              <Form.Control
-                type="text"
-                placeholder={t('common.search') + " menu..."}
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              {searchTerm && (
-                <Button
-                  variant="outline-secondary"
-                  size="sm"
-                  onClick={() => setSearchTerm('')}
-                  className="search-clear-btn"
-                >
-                  <i className="bx bx-x"></i>
-                </Button>
-              )}
-            </InputGroup>
-          </div>
-        )}
-
-        {/* Verification Status */}
-        <div className="sidebar-verification">
-          <Button
-            variant={isVerified ? 'success' : 'warning'}
-            size="sm"
-            className="w-100 verification-btn"
-            onClick={onVerificationClick}
-          >
-            <i className={`sidebar-icon bx ${isVerified ? 'bx-check-shield' : 'bx-lock-alt'}`}></i>
-            {!sidebarCollapsed && (
-              <span className="sidebar-label">
-                {isVerified ? 'Verified Access' : 'Verify Access'}
-              </span>
-            )}
-          </Button>
-        </div>
-
-        {/* Recently Used Section */}
-        {!sidebarCollapsed && recentlyUsed.length > 0 && (
-          <div className="sidebar-section">
-            <div className="sidebar-section-header">
-              <small className="text-muted">Recently Used</small>
+          <div className="flex items-center space-x-2 overflow-hidden">
+            <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center text-white flex-shrink-0">
+              <i className="bx bx-car text-xl"></i>
             </div>
-            <div className="recent-items">
-              {recentlyUsed.slice(0, 3).map(itemId => {
-                const item = menuItems.find(m => m.id === itemId) ||
-                  menuItems.find(m => m.children?.some(c => c.id === itemId))?.children?.find(c => c.id === itemId);
-                if (!item) return null;
-
-                return (
-                  <Button
-                    key={itemId}
-                    variant="link"
-                    size="sm"
-                    className={`recent-item ${activeTab === itemId ? 'active' : ''}`}
-                    onClick={() => handleMenuClick(itemId)}
-                  >
-                    <i className={`me-2 ${item.icon}`}></i>
-                    {item.label}
-                  </Button>
-                );
-              })}
+            <div className="flex flex-col min-w-0">
+              <h6 className="font-bold text-slate-800 text-sm truncate">Transport System</h6>
+              <span className="text-xs text-slate-500 truncate">Management Dashboard</span>
             </div>
           </div>
         )}
-
-        {/* Navigation Menu */}
-        <Nav className="sidebar-nav flex-column">
-          {filteredMenuItems.map(renderMenuItem)}
-        </Nav>
-
-        {/* Sidebar Footer */}
-        {!sidebarCollapsed && (
-          <div className="sidebar-footer">
-            <div className="sidebar-user-info">
-              <div className="d-flex align-items-center">
-                <div className="user-avatar">
-                  <i className="bx bx-user"></i>
-                </div>
-                <div className="user-details">
-                  <small className="user-name">Admin User</small>
-                  <small className="user-role">System Administrator</small>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        <button
+          className="p-2 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors lg:hidden"
+          onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+        >
+          <i className='bx bx-x text-xl'></i>
+        </button>
       </div>
-    </>
+
+      {/* Search Bar */}
+      {!sidebarCollapsed && (
+        <div className="p-4 border-b border-slate-50">
+          <div className="relative">
+            <i className="bx bx-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            <input
+              type="text"
+              placeholder={t('common.search') + "..."}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-9 pr-8 py-2 bg-slate-50 border-none rounded-xl text-sm text-slate-600 focus:ring-2 focus:ring-emerald-500/20 focus:bg-white transition-all placeholder:text-slate-400"
+            />
+            {searchTerm && (
+              <button
+                onClick={() => setSearchTerm('')}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+              >
+                <i className="bx bx-x"></i>
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Verification Status */}
+      <div className="p-4">
+        <button
+          className={`
+            w-full flex items-center justify-center space-x-2 py-2.5 rounded-xl text-sm font-medium transition-all duration-300
+            ${isVerified
+              ? 'bg-emerald-50 text-emerald-700 border border-emerald-100'
+              : 'bg-amber-50 text-amber-700 border border-amber-100 hover:bg-amber-100'}
+          `}
+          onClick={onVerificationClick}
+        >
+          <i className={`bx ${isVerified ? 'bx-check-shield' : 'bx-lock-alt'} text-lg`}></i>
+          {!sidebarCollapsed && (
+            <span className="whitespace-nowrap">{isVerified ? 'Verified Access' : 'Verify Access'}</span>
+          )}
+        </button>
+      </div>
+
+      {/* Navigation Menu */}
+      <div className="flex-1 overflow-y-auto scrollbar-thin py-2">
+        {filteredMenuItems.map(renderMenuItem)}
+      </div>
+
+      {/* Sidebar Footer */}
+      {!sidebarCollapsed && (
+        <div className="p-4 border-t border-slate-100 bg-slate-50/50">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white shadow-lg shadow-emerald-200">
+              <i className="bx bx-user text-xl"></i>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-slate-800 truncate">Admin User</p>
+              <p className="text-xs text-slate-500 truncate">System Administrator</p>
+            </div>
+          </div>
+        </div>
+      )}
+    </aside>
   );
 };
 

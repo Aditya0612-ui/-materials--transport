@@ -33,8 +33,8 @@ const InputField = ({
     ? 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50 dark:bg-red-900/10'
     : 'border-dark-600 focus:border-primary-500 focus:ring-primary-500 bg-dark-800 text-white';
 
-  // Size classes
-  const sizeClasses = type === 'textarea' ? 'px-4 py-3 text-base' : 'px-4 py-2.5 text-base';
+  // Size classes - standardized to h-12 (48px) and text-base (15px)
+  const sizeClasses = type === 'textarea' ? 'px-4 py-3 text-base min-h-[120px]' : 'px-4 h-12 text-base';
 
   // Icon padding
   const iconPaddingClasses = icon

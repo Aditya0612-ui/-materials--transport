@@ -1,12 +1,11 @@
 // src/components/dashboard/StatsCards.jsx
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Card } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useTransportContext } from '../../context/TransportContext';
 import FirebaseService from '../../services/firebaseService';
 import 'boxicons/css/boxicons.min.css';
 
-const StatsCards = ({ data }) => {
+const StatsCards = () => {
   const { t } = useTranslation();
   const [trips, setTrips] = useState([]);
 
@@ -67,103 +66,129 @@ const StatsCards = ({ data }) => {
     {
       title: t('dashboard.totalVehicles'),
       value: totalVehicles,
-      variant: 'primary',
       icon: 'bx bx-car',
-      color: '#065f46',
-      trend: `${totalVehicles} ${t('dashboard.registered')}`
+      color: 'text-emerald-600',
+      bg: 'bg-emerald-100',
+      cardBg: 'bg-emerald-50',
+      borderColor: 'border-emerald-100',
+      trend: `${totalVehicles} ${t('dashboard.registered')}`,
+      trendColor: 'text-emerald-600'
     },
     {
       title: t('dashboard.activeTrips'),
       value: activeTrips,
-      variant: 'success',
       icon: 'bx bx-trip',
-      color: '#10b981',
-      trend: t('dashboard.inTransitPending')
+      color: 'text-teal-600',
+      bg: 'bg-teal-100',
+      cardBg: 'bg-teal-50',
+      borderColor: 'border-teal-100',
+      trend: t('dashboard.inTransitPending'),
+      trendColor: 'text-teal-600'
     },
     {
       title: t('dashboard.activeTripDistance'),
       value: totalDistanceActiveTrips > 1000
         ? `${(totalDistanceActiveTrips / 1000).toFixed(1)}K KM`
         : `${totalDistanceActiveTrips.toFixed(0)} KM`,
-      variant: 'info',
       icon: 'bx bx-map',
-      color: '#3b82f6',
-      trend: t('dashboard.activeTripsOnly')
+      color: 'text-blue-600',
+      bg: 'bg-blue-100',
+      cardBg: 'bg-blue-50',
+      borderColor: 'border-blue-100',
+      trend: t('dashboard.activeTripsOnly'),
+      trendColor: 'text-blue-600'
     },
     {
       title: t('dashboard.fuelCost'),
       value: fuelCostAllTrips > 1000
         ? `₹${(fuelCostAllTrips / 1000).toFixed(1)}K`
         : `₹${fuelCostAllTrips.toFixed(0)}`,
-      variant: 'warning',
       icon: 'bx bx-gas-pump',
-      color: '#f59e0b',
-      trend: t('dashboard.allTrips')
+      color: 'text-amber-600',
+      bg: 'bg-amber-100',
+      cardBg: 'bg-amber-50',
+      borderColor: 'border-amber-100',
+      trend: t('dashboard.allTrips'),
+      trendColor: 'text-amber-600'
     },
     {
       title: t('dashboard.totalCost'),
       value: totalCostAllTrips > 1000
         ? `₹${(totalCostAllTrips / 1000).toFixed(1)}K`
         : `₹${totalCostAllTrips.toFixed(0)}`,
-      variant: 'danger',
       icon: 'bx bx-wallet',
-      color: '#ef4444',
-      trend: t('dashboard.allTrips')
+      color: 'text-red-600',
+      bg: 'bg-red-100',
+      cardBg: 'bg-red-50',
+      borderColor: 'border-red-100',
+      trend: t('dashboard.allTrips'),
+      trendColor: 'text-red-600'
     },
     {
       title: t('dashboard.completedTrips'),
       value: completedTrips,
-      variant: 'success',
       icon: 'bx bx-check-circle',
-      color: '#10b981',
-      trend: `${completedTrips} ${t('dashboard.completed')}`
+      color: 'text-green-600',
+      bg: 'bg-green-100',
+      cardBg: 'bg-green-50',
+      borderColor: 'border-green-100',
+      trend: `${completedTrips} ${t('dashboard.completed')}`,
+      trendColor: 'text-green-600'
     },
     {
       title: t('dashboard.totalDistance'),
       value: totalDistanceAll > 1000
         ? `${(totalDistanceAll / 1000).toFixed(1)}K KM`
         : `${totalDistanceAll.toFixed(0)} KM`,
-      variant: 'info',
       icon: 'bx bx-map-alt',
-      color: '#3b82f6',
-      trend: t('dashboard.allTrips')
+      color: 'text-cyan-600',
+      bg: 'bg-cyan-100',
+      cardBg: 'bg-cyan-50',
+      borderColor: 'border-cyan-100',
+      trend: t('dashboard.allTrips'),
+      trendColor: 'text-cyan-600'
     },
     {
       title: t('dashboard.totalRevenue'),
       value: totalRevenue > 1000
         ? `₹${(totalRevenue / 1000).toFixed(1)}K`
         : `₹${totalRevenue.toFixed(0)}`,
-      variant: 'primary',
       icon: 'bx bx-dollar-circle',
-      color: '#065f46',
-      trend: t('dashboard.allTrips')
+      color: 'text-emerald-700',
+      bg: 'bg-emerald-200',
+      cardBg: 'bg-emerald-50',
+      borderColor: 'border-emerald-100',
+      trend: t('dashboard.allTrips'),
+      trendColor: 'text-emerald-700'
     }
   ];
 
   return (
-    <Row className="mb-4 g-3 stats-cards-row">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
       {stats.map((stat, index) => (
-        <Col xs={6} sm={6} md={6} lg={4} xl={3} key={index}>
-          <Card className={`stats-card ${index % 2 === 0 ? 'primary' : 'secondary'} h-100`}>
-            <Card.Body className="p-3">
-              <div className="d-flex justify-content-between align-items-start">
-                <div className="flex-grow-1 pe-2">
-                  <h6 className="mb-2">{stat.title}</h6>
-                  <h3 className="mb-1">{stat.value}</h3>
-                  <small className="d-flex align-items-center trend up">
-                    <i className="bx bx-trending-up me-1"></i>
-                    <span>{stat.trend}</span>
-                  </small>
-                </div>
-                <div className="trend-icon flex-shrink-0">
-                  <i className={stat.icon} style={{ fontSize: '1.4rem', color: stat.color }}></i>
-                </div>
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
+        <div
+          key={index}
+          className={`${stat.cardBg} rounded-2xl p-6 shadow-sm border ${stat.borderColor} hover:shadow-lg hover:-translate-y-1 transition-all duration-300 ease-in-out group h-full flex flex-col justify-between`}
+        >
+          <div className="flex justify-between items-start mb-4">
+            <div>
+              <h3 className="text-slate-700 text-base font-semibold mb-1">{stat.title}</h3>
+              <div className="text-3xl font-bold text-slate-800">{stat.value}</div>
+            </div>
+            <div className={`p-3 rounded-xl ${stat.bg} ${stat.color} group-hover:scale-110 transition-transform duration-300`}>
+              <i className={`${stat.icon} text-xl`}></i>
+            </div>
+          </div>
+
+          <div className="flex items-center text-sm">
+            <span className={`flex items-center font-medium ${stat.trendColor}`}>
+              <i className='bx bx-trending-up mr-1'></i>
+              {stat.trend}
+            </span>
+          </div>
+        </div>
       ))}
-    </Row>
+    </div>
   );
 };
 

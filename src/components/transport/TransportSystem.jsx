@@ -1,5 +1,6 @@
+// src/components/transport/TransportSystem.jsx
 import React, { useState, useEffect } from 'react';
-import { Card, Row, Col, Table, Button, Form, Badge, Modal, Alert, Spinner, Container, InputGroup } from 'react-bootstrap';
+import { Card, Row, Col, Table, Button, Form, Badge, Modal, Alert, Spinner, InputGroup } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import 'boxicons/css/boxicons.min.css';
 import { useTransportContext } from '../../context/TransportContext';
@@ -289,10 +290,10 @@ const TransportSystem = () => {
 
   const getStatusBadge = (status) => {
     const variants = {
-      active: 'success',
-      maintenance: 'warning',
-      inactive: 'secondary',
-      available: 'info'
+      active: 'bg-emerald-100 text-emerald-700 border-emerald-200',
+      maintenance: 'bg-amber-100 text-amber-700 border-amber-200',
+      inactive: 'bg-slate-100 text-slate-700 border-slate-200',
+      available: 'bg-blue-100 text-blue-700 border-blue-200'
     };
     const statusText = {
       active: t('transport.active'),
@@ -300,7 +301,13 @@ const TransportSystem = () => {
       inactive: t('transport.inactive'),
       available: t('transport.available')
     };
-    return <Badge bg={variants[status]}>{statusText[status]?.toUpperCase() || status.toUpperCase()}</Badge>;
+
+    return (
+      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${variants[status] || variants.inactive}`}>
+        <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${status === 'active' ? 'bg-emerald-500' : status === 'available' ? 'bg-blue-500' : status === 'maintenance' ? 'bg-amber-500' : 'bg-slate-500'}`}></span>
+        {statusText[status]?.toUpperCase() || status.toUpperCase()}
+      </span>
+    );
   };
 
   // Filter vehicles based on search, status, and type filters
@@ -329,27 +336,24 @@ const TransportSystem = () => {
   const currentData = filterVehicles(baseData);
 
   return (
-    <Container fluid className="transport-system py-4">
+    <div className="transport-system">
       {/* Header Section */}
-      <Row className="mb-4">
-        <Col>
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <div>
-              <h2 className="mb-1"><i className="bx bx-car me-2 text-primary"></i>{t('transport.systemTitle')}</h2>
-              <p className="text-muted mb-0">{t('transport.systemSubtitle')}</p>
-            </div>
-            <Button
-              variant="primary"
-              size="lg"
-              onClick={() => setShowAddModal(true)}
-              className="d-flex align-items-center gap-2"
-            >
-              <i className="bx bx-plus"></i>
-              {t('transport.addNewVehicle')}
-            </Button>
-          </div>
-        </Col>
-      </Row>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+        <div>
+          <h2 className="text-xl font-bold text-slate-800 flex items-center">
+            <i className="bx bx-car mr-2 text-emerald-600"></i>
+            {t('transport.systemTitle')}
+          </h2>
+          <p className="text-slate-500 text-sm mt-1">{t('transport.systemSubtitle')}</p>
+        </div>
+        <button
+          onClick={() => setShowAddModal(true)}
+          className="flex items-center px-4 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 transition-colors shadow-lg shadow-emerald-200 font-medium text-sm"
+        >
+          <i className="bx bx-plus mr-2 text-lg"></i>
+          {t('transport.addNewVehicle')}
+        </button>
+      </div>
 
       {/* Alert */}
       {showAlert.show && (
@@ -387,6 +391,7 @@ const TransportSystem = () => {
                         placeholder={t('transport.searchPlaceholder')}
                         value={filters.search}
                         onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
+                        style={{ height: '48px', fontSize: '15px' }}
                       />
                     </InputGroup>
                   </Form.Group>
@@ -400,6 +405,7 @@ const TransportSystem = () => {
                       value={filters.type}
                       onChange={(e) => setFilters(prev => ({ ...prev, type: e.target.value }))}
                       className="form-control-lg"
+                      style={{ height: '48px', fontSize: '15px' }}
                     >
                       <option value="">{t('transport.allTypes')}</option>
                       <option value="type1">{t('transport.type1')}</option>
@@ -415,13 +421,14 @@ const TransportSystem = () => {
                     <Form.Select
                       value={filters.status}
                       onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
-                      className="form-control-lg"
+                      className="form-control-lg h-12"
+                      style={{ height: '48px', fontSize: '15px' }}
                     >
                       <option value="">{t('transport.allStatus')}</option>
-                      <option value="available">{t('transport.available')}</option>
-                      <option value="active">{t('transport.active')}</option>
-                      <option value="maintenance">{t('transport.maintenance')}</option>
-                      <option value="inactive">{t('transport.inactive')}</option>
+                      <option value="available" className="text-slate-700">{t('transport.available')}</option>
+                      <option value="active" className="text-slate-700">{t('transport.active')}</option>
+                      <option value="maintenance" className="text-slate-700">{t('transport.maintenance')}</option>
+                      <option value="inactive" className="text-slate-700">{t('transport.inactive')}</option>
                     </Form.Select>
                   </Form.Group>
                 </Col>
@@ -432,122 +439,159 @@ const TransportSystem = () => {
       </Row>
 
       {/* Type Tabs */}
-      <Row className="mb-3">
-        <Col>
-          <div className="d-flex gap-2">
-            <Button
-              variant={activeType === 'type1' ? 'primary' : 'outline-primary'}
-              onClick={() => setActiveType('type1')}
-            >
-              {t('transport.type1')} - {type1Vehicles.length} {t('transport.vehiclesCount')}
-            </Button>
-            <Button
-              variant={activeType === 'type2' ? 'success' : 'outline-success'}
-              onClick={() => setActiveType('type2')}
-            >
-              {t('transport.type2')} - {type2Vehicles.length} {t('transport.vehiclesCount')}
-            </Button>
-          </div>
-        </Col>
-      </Row>
+      <div className="mb-6">
+        <div className="inline-flex bg-slate-100 p-1 rounded-xl">
+          <button
+            onClick={() => setActiveType('type1')}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${activeType === 'type1'
+              ? 'bg-white text-emerald-600 shadow-sm'
+              : 'text-slate-500 hover:text-slate-700'
+              }`}
+          >
+            {t('transport.type1')}
+            <span className={`ml-2 px-2 py-0.5 rounded-full text-xs ${activeType === 'type1' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-600'
+              }`}>
+              {type1Vehicles.length}
+            </span>
+          </button>
+          <button
+            onClick={() => setActiveType('type2')}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${activeType === 'type2'
+              ? 'bg-white text-emerald-600 shadow-sm'
+              : 'text-slate-500 hover:text-slate-700'
+              }`}
+          >
+            {t('transport.type2')}
+            <span className={`ml-2 px-2 py-0.5 rounded-full text-xs ${activeType === 'type2' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-600'
+              }`}>
+              {type2Vehicles.length}
+            </span>
+          </button>
+        </div>
+      </div>
 
       {/* Vehicles Table */}
-      <Row>
-        <Col>
-          <Card className="shadow-sm">
-            <Card.Header className="bg-light">
-              <h6 className="mb-0">
-                <i className="bx bx-list-ul me-2"></i>
-                {activeType === 'type1' ? t('transport.tenWheelers') : t('transport.twelveWheelers')}
-              </h6>
-            </Card.Header>
-            <Card.Body className="p-0">
-              {loading || contextLoading ? (
-                <div className="text-center py-4">
-                  <Spinner animation="border" role="status">
-                    <span className="visually-hidden">{t('transport.loading')}</span>
-                  </Spinner>
-                </div>
-              ) : (
-                <Table responsive striped hover className="mb-0">
-                  <thead>
-                    <tr>
-                      <th>{t('transport.vehicleNumber')}</th>
-                      <th>{t('transport.driverName')}</th>
-                      <th>{t('transport.contact')}</th>
-                      <th>{t('transport.route')}</th>
-                      <th>{t('transport.capacity')}</th>
-                      <th>{t('transport.status')}</th>
-                      <th className="text-center">{t('transport.actions')}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {currentData.length === 0 ? (
-                      <tr>
-                        <td colSpan="7" className="text-center py-4">
-                          <div className="text-muted">
-                            <i className="bx bx-car fs-1 d-block mb-2"></i>
-                            {t('transport.noVehiclesFound')}
-                            <br />
-                            <small>{t('transport.clickAddVehicle')}</small>
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+        <div className="px-6 py-4 border-b border-slate-50 bg-slate-50/50 flex justify-between items-center">
+          <h3 className="font-semibold text-slate-800 flex items-center">
+            <i className="bx bx-list-ul mr-2 text-emerald-600"></i>
+            {activeType === 'type1' ? t('transport.tenWheelers') : t('transport.twelveWheelers')}
+          </h3>
+          <span className="text-xs text-slate-500 font-medium px-2 py-1 bg-white rounded border border-slate-200">
+            {currentData.length} Vehicles
+          </span>
+        </div>
+
+        <div className="overflow-x-auto scrollbar-white">
+          {loading || contextLoading ? (
+            <div className="text-center py-12">
+              <Spinner animation="border" variant="success" role="status" />
+              <p className="mt-2 text-sm text-slate-500">{t('transport.loading')}</p>
+            </div>
+          ) : (
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-slate-50/50 border-b border-slate-100 text-sm uppercase text-slate-700 font-semibold tracking-wider">
+                  <th className="px-6 py-4">{t('transport.vehicleNumber')}</th>
+                  <th className="px-6 py-4">{t('transport.driverName')}</th>
+                  <th className="px-6 py-4">{t('transport.contact')}</th>
+                  <th className="px-6 py-4">{t('transport.route')}</th>
+                  <th className="px-6 py-4 text-center">{t('transport.capacity')}</th>
+                  <th className="px-6 py-4 text-center">{t('transport.status')}</th>
+                  <th className="px-6 py-4 text-right">{t('transport.actions')}</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-50">
+                {currentData.length === 0 ? (
+                  <tr>
+                    <td colSpan="7" className="text-center py-12">
+                      <div className="flex flex-col items-center justify-center text-slate-400">
+                        <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4">
+                          <i className="bx bx-car text-3xl text-slate-300"></i>
+                        </div>
+                        <p className="text-lg font-medium text-slate-600">{t('transport.noVehiclesFound')}</p>
+                        <p className="text-sm mb-4">{t('transport.clickAddVehicle')}</p>
+                        <button
+                          onClick={() => setShowAddModal(true)}
+                          className="px-4 py-2 bg-emerald-50 text-emerald-600 rounded-lg text-sm font-medium hover:bg-emerald-100 transition-colors"
+                        >
+                          {t('transport.addNewVehicle')}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ) : (
+                  currentData.map(transport => (
+                    <tr key={transport.firebaseId || transport.id} className="hover:bg-slate-50/80 transition-colors group">
+                      <td className="px-6 py-4">
+                        <div className="font-semibold text-slate-800 text-base">{transport.vehicleNumber}</div>
+                        <div className="text-sm text-slate-500 mt-0.5">ID: {transport.firebaseId?.slice(-6) || '...'}</div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center">
+                          <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 mr-3 text-xs font-bold">
+                            {transport.driverName?.charAt(0)}
                           </div>
-                        </td>
-                      </tr>
-                    ) : (
-                      currentData.map(transport => (
-                        <tr key={transport.firebaseId || transport.id}>
-                          <td><strong>{transport.vehicleNumber}</strong></td>
-                          <td>{transport.driverName}</td>
-                          <td>
-                            <small className="text-muted">
-                              <i className="bx bx-phone me-1"></i>
-                              {transport.driverContact || 'N/A'}
-                            </small>
-                          </td>
-                          <td>{transport.route}</td>
-                          <td className="text-center">{transport.capacity}</td>
-                          <td>{getStatusBadge(transport.status)}</td>
-                          <td className="text-center">
-                            {(transport.status === 'available' || transport.status === 'active') && (
-                              <Button
-                                variant="outline-success"
-                                size="sm"
-                                className="me-1"
-                                onClick={() => handleOpenTripModal(transport)}
-                                title={t('transport.createNewTrip')}
-                              >
-                                <i className="bx bx-plus-circle"></i> {t('transport.createTrip')}
-                              </Button>
-                            )}
-                            <Button
-                              variant="outline-primary"
-                              size="sm"
-                              className="me-1"
-                              onClick={() => {
-                                setEditingTransport(transport);
-                                setShowEditModal(true);
-                              }}
+                          <span className="text-slate-700 font-medium text-base">{transport.driverName}</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="text-base text-slate-700 font-mono bg-slate-50 px-2 py-1 rounded inline-block">
+                          {transport.driverContact || 'N/A'}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center text-slate-700 text-base">
+                          <i className="bx bx-map text-slate-400 mr-2"></i>
+                          {transport.route}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
+                          {transport.capacity}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        {getStatusBadge(transport.status)}
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <div className="flex items-center justify-end space-x-2 opacity-100">
+                          {(transport.status === 'available' || transport.status === 'active') && (
+                            <button
+                              onClick={() => handleOpenTripModal(transport)}
+                              className="p-2 rounded-lg text-emerald-600 hover:bg-emerald-50 border border-transparent hover:border-emerald-100 transition-all"
+                              title={t('transport.createTrip')}
                             >
-                              <i className="bx bx-edit"></i>
-                            </Button>
-                            <Button
-                              variant="outline-danger"
-                              size="sm"
-                              onClick={() => handleDeleteTransport(transport)}
-                            >
-                              <i className="bx bx-trash"></i>
-                            </Button>
-                          </td>
-                        </tr>
-                      ))
-                    )}
-                  </tbody>
-                </Table>
-              )}
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
+                              <i className="bx bx-plus-circle text-xl"></i>
+                            </button>
+                          )}
+                          <button
+                            onClick={() => {
+                              setEditingTransport(transport);
+                              setShowEditModal(true);
+                            }}
+                            className="p-2 rounded-lg text-blue-600 hover:bg-blue-50 border border-transparent hover:border-blue-100 transition-all"
+                            title="Edit Vehicle"
+                          >
+                            <i className="bx bx-edit text-xl"></i>
+                          </button>
+                          <button
+                            onClick={() => handleDeleteTransport(transport)}
+                            className="p-2 rounded-lg text-red-600 hover:bg-red-50 border border-transparent hover:border-red-100 transition-all"
+                            title="Delete Vehicle"
+                          >
+                            <i className="bx bx-trash text-xl"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          )}
+        </div>
+      </div>
 
       {/* Add Vehicle Modal */}
       <Modal show={showAddModal} onHide={() => setShowAddModal(false)} size="lg">
@@ -613,6 +657,7 @@ const TransportSystem = () => {
                     placeholder="e.g., 10 Ton"
                     value={newTransport.capacity}
                     onChange={(e) => setNewTransport(prev => ({ ...prev, capacity: e.target.value }))}
+                    style={{ height: '48px', fontSize: '15px' }}
                   />
                 </Form.Group>
               </Col>
@@ -622,6 +667,7 @@ const TransportSystem = () => {
                   <Form.Select
                     value={newTransport.status}
                     onChange={(e) => setNewTransport(prev => ({ ...prev, status: e.target.value }))}
+                    style={{ height: '48px', fontSize: '15px' }}
                   >
                     <option value="available">{t('transport.available')}</option>
                     <option value="active">{t('transport.active')}</option>
@@ -1119,7 +1165,7 @@ const TransportSystem = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-    </Container>
+    </div>
   );
 };
 

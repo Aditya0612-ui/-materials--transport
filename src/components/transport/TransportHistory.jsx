@@ -216,186 +216,206 @@ const TransportHistory = () => {
 
   return (
     <div className="transport-history">
-      <Row className="mb-4">
-        <Col>
-          <Card>
-            <Card.Header>
-              <div className="d-flex justify-content-between align-items-center">
-                <h5 className="mb-0">
-                  <i className="bx bx-history me-2"></i>
-                  {t('transport.historyTitle')}
-                </h5>
-                <small className="text-muted">
-                  <i className="bx bx-info-circle me-1"></i>
-                  {t('transport.historySubtitle')}
-                </small>
-              </div>
-            </Card.Header>
-            <Card.Body>
-              {/* Alert */}
-              {showAlert.show && (
-                <Alert
-                  variant={showAlert.variant}
-                  className="mb-3"
-                  dismissible
-                  onClose={() => setShowAlert({ show: false, message: '', variant: 'success' })}
-                >
-                  {showAlert.message}
-                </Alert>
-              )}
+      {/* Header */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+        <div>
+          <h2 className="text-xl font-bold text-slate-800 flex items-center">
+            <i className="bx bx-history mr-2 text-emerald-600"></i>
+            {t('transport.historyTitle')}
+          </h2>
+          <p className="text-slate-500 text-sm mt-1">{t('transport.historySubtitle')}</p>
+        </div>
+      </div>
 
-              {/* Filters */}
-              <Row className="mb-3">
-                <Col md={3}>
-                  <Form.Group>
-                    <Form.Label>{t('common.search')}</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder={t('transport.searchTripsPlaceholder')}
-                      value={filters.search}
-                      onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
-                    />
-                  </Form.Group>
-                </Col>
-                <Col md={2}>
-                  <Form.Group>
-                    <Form.Label>{t('transport.status')}</Form.Label>
-                    <Form.Select
-                      value={filters.status}
-                      onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
-                    >
-                      <option value="">{t('transport.allStatus')}</option>
-                      <option value="planned">{t('transport.planned')}</option>
-                      <option value="in-progress">{t('transport.inProgress')}</option>
-                      <option value="completed">{t('transport.completed')}</option>
-                      <option value="cancelled">{t('transport.cancelled')}</option>
-                    </Form.Select>
-                  </Form.Group>
-                </Col>
-                <Col md={2}>
-                  <Form.Group>
-                    <Form.Label>{t('transport.fromDate')}</Form.Label>
-                    <Form.Control
-                      type="date"
-                      value={filters.dateFrom}
-                      onChange={(e) => setFilters(prev => ({ ...prev, dateFrom: e.target.value }))}
-                    />
-                  </Form.Group>
-                </Col>
-                <Col md={2}>
-                  <Form.Group>
-                    <Form.Label>{t('transport.toDate')}</Form.Label>
-                    <Form.Control
-                      type="date"
-                      value={filters.dateTo}
-                      onChange={(e) => setFilters(prev => ({ ...prev, dateTo: e.target.value }))}
-                    />
-                  </Form.Group>
-                </Col>
-                <Col md={3}>
-                  <Form.Group>
-                    <Form.Label>&nbsp;</Form.Label>
-                    <div className="d-flex gap-2">
-                      <Button
-                        variant="outline-secondary"
-                        onClick={() => setFilters({ search: '', status: '', dateFrom: '', dateTo: '' })}
-                      >
-                        {t('transport.clearFilters')}
-                      </Button>
-                    </div>
-                  </Form.Group>
-                </Col>
-              </Row>
+      {/* Alert */}
+      {showAlert.show && (
+        <div className={`mb-4 p-4 rounded-lg border flex items-center justify-between ${showAlert.variant === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-red-50 border-red-200 text-red-700'
+          }`}>
+          <div className="flex items-center">
+            <i className={`bx ${showAlert.variant === 'success' ? 'bx-check-circle' : 'bx-error-circle'} mr-2 text-xl`}></i>
+            {showAlert.message}
+          </div>
+          <button onClick={() => setShowAlert({ show: false, message: '', variant: 'success' })} className="text-current hover:opacity-75">
+            <i className="bx bx-x text-xl"></i>
+          </button>
+        </div>
+      )}
 
-              {/* Trips Table */}
-              {loading ? (
-                <div className="text-center py-4">
-                  <Spinner animation="border" role="status">
-                    <span className="visually-hidden">{t('transport.loading')}</span>
-                  </Spinner>
-                </div>
-              ) : (
-                <Table responsive striped bordered hover>
-                  <thead>
-                    <tr>
-                      <th>{t('transport.tripId')}</th>
-                      <th>{t('transport.vehicle')}</th>
-                      <th>{t('transport.driver')}</th>
-                      <th>{t('transport.route')}</th>
-                      <th>{t('transport.startDate')}</th>
-                      <th>{t('transport.distance')}</th>
-                      <th>{t('transport.cost')}</th>
-                      <th>{t('transport.status')}</th>
-                      <th>{t('transport.actions')}</th>
+      {/* Filters */}
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 mb-6">
+        <div className="flex items-center mb-4">
+          <i className="bx bx-filter text-emerald-600 mr-2"></i>
+          <h6 className="font-semibold text-slate-800 m-0">{t('transport.filtersSearch')}</h6>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div>
+            <label className="block text-xs font-medium text-slate-500 mb-1 uppercase tracking-wide">{t('common.search')}</label>
+            <div className="relative">
+              <i className="bx bx-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+              <input
+                type="text"
+                className="w-full pl-10 pr-4 h-12 bg-slate-50 border border-slate-200 rounded-lg text-base text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                placeholder={t('transport.searchTripsPlaceholder')}
+                value={filters.search}
+                onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
+                style={{ color: '#1e293b' }}
+              />
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-slate-500 mb-1 uppercase tracking-wide">{t('transport.status')}</label>
+            <select
+              className="w-full px-4 h-12 bg-slate-50 border border-slate-200 rounded-lg text-base text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+              value={filters.status}
+              onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
+              style={{ color: '#1e293b' }}
+            >
+              <option value="">{t('transport.allStatus')}</option>
+              <option value="planned">{t('transport.planned')}</option>
+              <option value="in-progress">{t('transport.inProgress')}</option>
+              <option value="completed">{t('transport.completed')}</option>
+              <option value="cancelled">{t('transport.cancelled')}</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-slate-500 mb-1 uppercase tracking-wide">{t('transport.fromDate')}</label>
+            <input
+              type="date"
+              className="w-full px-4 h-12 bg-slate-50 border border-slate-200 rounded-lg text-base text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+              value={filters.dateFrom}
+              onChange={(e) => setFilters(prev => ({ ...prev, dateFrom: e.target.value }))}
+              style={{ color: '#1e293b', colorScheme: 'light' }}
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-slate-500 mb-1 uppercase tracking-wide">{t('transport.toDate')}</label>
+            <div className="flex gap-2">
+              <input
+                type="date"
+                className="w-full px-4 h-12 bg-slate-50 border border-slate-200 rounded-lg text-base text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                value={filters.dateTo}
+                onChange={(e) => setFilters(prev => ({ ...prev, dateTo: e.target.value }))}
+                style={{ color: '#1e293b', colorScheme: 'light' }}
+              />
+              <button
+                onClick={() => setFilters({ search: '', status: '', dateFrom: '', dateTo: '' })}
+                className="px-3 py-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 transition-colors"
+                title={t('transport.clearFilters')}
+              >
+                <i className="bx bx-reset text-lg"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Trips Table */}
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+        <div className="px-6 py-4 border-b border-slate-50 bg-slate-50/50 flex justify-between items-center">
+          <h3 className="font-semibold text-slate-800 flex items-center">
+            <i className="bx bx-list-ul mr-2 text-emerald-600"></i>
+            {t('transport.tripList')}
+          </h3>
+          <span className="text-xs text-slate-500 font-medium px-2 py-1 bg-white rounded border border-slate-200">
+            {filteredTrips.length} Trips
+          </span>
+        </div>
+
+        <div className="overflow-x-auto scrollbar-white">
+          {loading ? (
+            <div className="text-center py-12">
+              <Spinner animation="border" variant="success" role="status" />
+              <p className="mt-2 text-sm text-slate-500">{t('transport.loading')}</p>
+            </div>
+          ) : (
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-slate-50/50 border-b border-slate-100 text-sm uppercase text-slate-700 font-semibold tracking-wider">
+                  <th className="px-6 py-4">{t('transport.tripId')}</th>
+                  <th className="px-6 py-4">{t('transport.vehicle')}</th>
+                  <th className="px-6 py-4">{t('transport.driver')}</th>
+                  <th className="px-6 py-4">{t('transport.route')}</th>
+                  <th className="px-6 py-4">{t('transport.startDate')}</th>
+                  <th className="px-6 py-4">{t('transport.distance')}</th>
+                  <th className="px-6 py-4">{t('transport.cost')}</th>
+                  <th className="px-6 py-4">{t('transport.status')}</th>
+                  <th className="px-6 py-4 text-right">{t('transport.actions')}</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-50">
+                {filteredTrips.length === 0 ? (
+                  <tr>
+                    <td colSpan="9" className="text-center py-12">
+                      <div className="flex flex-col items-center justify-center text-slate-400">
+                        <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4">
+                          <i className="bx bx-trip text-3xl text-slate-300"></i>
+                        </div>
+                        <p className="text-lg font-medium text-slate-600">{t('transport.noTripsFound')}</p>
+                        <p className="text-sm mb-4">{t('transport.clickAddTrip')}</p>
+                      </div>
+                    </td>
+                  </tr>
+                ) : (
+                  filteredTrips.map(trip => (
+                    <tr key={trip.firebaseId || trip.id} className="hover:bg-slate-50/80 transition-colors group">
+                      <td className="px-6 py-4">
+                        <span className="font-semibold text-slate-800 text-base">{trip.tripId}</span>
+                      </td>
+                      <td className="px-6 py-4 text-slate-700 font-medium text-base">{trip.vehicleNumber}</td>
+                      <td className="px-6 py-4 text-slate-700 text-base">{trip.driverName}</td>
+                      <td className="px-6 py-4 text-slate-700">
+                        <div className="flex items-center">
+                          <i className="bx bx-map text-slate-400 mr-1"></i>
+                          {trip.route}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-slate-700 font-mono text-sm">
+                        {new Date(trip.startDate).toLocaleDateString()}
+                      </td>
+                      <td className="px-6 py-4 text-slate-700 text-base">{trip.distance} km</td>
+                      <td className="px-6 py-4 text-slate-700 font-medium text-base">₹{trip.cost}</td>
+                      <td className="px-6 py-4">
+                        {getStatusBadge(trip.status)}
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <div className="flex items-center justify-end space-x-2 opacity-100">
+                          <button
+                            onClick={() => {
+                              setViewingTrip(trip);
+                              setShowViewModal(true);
+                            }}
+                            className="p-2 rounded-lg text-blue-500 hover:bg-blue-50 border border-transparent hover:border-blue-100 transition-all"
+                            title="View Details"
+                          >
+                            <i className="bx bx-show text-xl"></i>
+                          </button>
+                          <button
+                            onClick={() => {
+                              setEditingTrip(trip);
+                              setShowEditModal(true);
+                            }}
+                            className="p-2 rounded-lg text-indigo-500 hover:bg-indigo-50 border border-transparent hover:border-indigo-100 transition-all"
+                            title="Edit Trip"
+                          >
+                            <i className="bx bx-edit text-xl"></i>
+                          </button>
+                          <button
+                            onClick={() => handleDeleteTrip(trip)}
+                            className="p-2 rounded-lg text-red-500 hover:bg-red-50 border border-transparent hover:border-red-100 transition-all"
+                            title="Delete Trip"
+                          >
+                            <i className="bx bx-trash text-xl"></i>
+                          </button>
+                        </div>
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {filteredTrips.length === 0 ? (
-                      <tr>
-                        <td colSpan="9" className="text-center py-4">
-                          <div className="text-muted">
-                            <i className="bx bx-trip fs-1 d-block mb-2"></i>
-                            {t('transport.noTripsFound')}
-                            <br />
-                            <small>{t('transport.clickAddTrip')}</small>
-                          </div>
-                        </td>
-                      </tr>
-                    ) : (
-                      filteredTrips.map(trip => (
-                        <tr key={trip.firebaseId || trip.id}>
-                          <td><strong>{trip.tripId}</strong></td>
-                          <td>{trip.vehicleNumber}</td>
-                          <td>{trip.driverName}</td>
-                          <td>{trip.route}</td>
-                          <td>{new Date(trip.startDate).toLocaleDateString()}</td>
-                          <td>{trip.distance} km</td>
-                          <td>₹{trip.cost}</td>
-                          <td>{getStatusBadge(trip.status)}</td>
-                          <td>
-                            <Button
-                              variant="outline-info"
-                              size="sm"
-                              className="me-1"
-                              onClick={() => {
-                                setViewingTrip(trip);
-                                setShowViewModal(true);
-                              }}
-                              title="View Full Details"
-                            >
-                              <i className="bx bx-show"></i>
-                            </Button>
-                            <Button
-                              variant="outline-primary"
-                              size="sm"
-                              className="me-1"
-                              onClick={() => {
-                                setEditingTrip(trip);
-                                setShowEditModal(true);
-                              }}
-                              title="Edit Trip"
-                            >
-                              <i className="bx bx-edit"></i>
-                            </Button>
-                            <Button
-                              variant="outline-danger"
-                              size="sm"
-                              onClick={() => handleDeleteTrip(trip)}
-                              title="Delete Trip"
-                            >
-                              <i className="bx bx-trash"></i>
-                            </Button>
-                          </td>
-                        </tr>
-                      ))
-                    )}
-                  </tbody>
-                </Table>
-              )}
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
+                  ))
+                )}
+              </tbody>
+            </table>
+          )}
+        </div>
+      </div>
 
       {/* Add Trip Modal */}
       <Modal show={showAddModal} onHide={() => setShowAddModal(false)} size="lg">

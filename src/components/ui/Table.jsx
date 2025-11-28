@@ -79,8 +79,9 @@ const Table = ({
 
   return (
     <div className="w-full overflow-x-auto rounded-lg border border-dark-700 bg-dark-900">
-      {/* Horizontal scroll container for mobile */}
-      <div className="min-w-full overflow-x-auto">
+      {/* Horizontal scroll container for mobile with white scrollbar */}
+      <div className="min-w-full overflow-x-auto scrollbar-white"
+      >
         <table className={tableClasses}>
           {/* Table Header */}
           <thead className="bg-dark-800">
@@ -90,7 +91,7 @@ const Table = ({
                   key={column.key || index}
                   className={`
                     ${cellPadding}
-                    text-left text-xs font-semibold text-dark-300 uppercase tracking-wider
+                    text-left text-sm font-semibold text-dark-300 uppercase tracking-wider
                     ${column.headerClassName || ''}
                     ${column.hidden ? 'hidden md:table-cell' : ''}
                   `}
@@ -120,7 +121,7 @@ const Table = ({
                       key={`${rowIndex}-${column.key || colIndex}`}
                       className={`
                         ${cellPadding}
-                        text-sm text-dark-200
+                        text-base text-dark-200
                         ${column.cellClassName || ''}
                         ${column.hidden ? 'hidden md:table-cell' : ''}
                       `}

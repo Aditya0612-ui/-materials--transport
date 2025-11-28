@@ -6,18 +6,18 @@ import './VerificationSystem.css';
 const VerificationSystem = ({ show, onHide, onVerificationComplete }) => {
   // Verification type state
   const [verificationType, setVerificationType] = useState('phone');
-  
+
   // Bill verification states
   const [billNumber, setBillNumber] = useState('');
   const [billAmount, setBillAmount] = useState('');
-  
+
   // Phone OTP states
   const [phoneNumber, setPhoneNumber] = useState('');
   const [otp, setOtp] = useState('');
   const [generatedOtp, setGeneratedOtp] = useState('');
   const [isOtpSent, setIsOtpSent] = useState(false);
   const [otpTimer, setOtpTimer] = useState(0);
-  
+
   // Common states
   const [isLoading, setIsLoading] = useState(false);
   const [alert, setAlert] = useState({ show: false, message: '', type: '' });
@@ -53,7 +53,7 @@ const VerificationSystem = ({ show, onHide, onVerificationComplete }) => {
     }
 
     setIsLoading(true);
-    
+
     try {
       // Generate OTP using SMS service
       const newOtp = smsService.generateOTP(6);
@@ -61,15 +61,14 @@ const VerificationSystem = ({ show, onHide, onVerificationComplete }) => {
 
       // Send OTP via SMS service
       const result = await smsService.sendOTP(phoneNumber, newOtp);
-      
+
       if (result.success) {
         showAlert(
-          `OTP sent successfully to ${smsService.formatPhoneNumber(phoneNumber)}! ${
-            result.otp ? `Demo OTP: ${result.otp}` : ''
-          }`, 
+          `OTP sent successfully to ${smsService.formatPhoneNumber(phoneNumber)}! ${result.otp ? `Demo OTP: ${result.otp}` : ''
+          }`,
           'success'
         );
-        
+
         setIsOtpSent(true);
         setOtpTimer(120); // 2 minutes timer
       } else {
@@ -112,12 +111,12 @@ const VerificationSystem = ({ show, onHide, onVerificationComplete }) => {
       showAlert('Please enter both bill number and amount', 'danger');
       return;
     }
-    
+
     if (billAmount < 1) {
       showAlert('Please enter a valid bill amount', 'danger');
       return;
     }
-    
+
     setIsLoading(true);
     setTimeout(() => {
       setIsLoading(false);
@@ -134,14 +133,14 @@ const VerificationSystem = ({ show, onHide, onVerificationComplete }) => {
     // Reset bill verification
     setBillNumber('');
     setBillAmount('');
-    
+
     // Reset phone OTP verification
     setPhoneNumber('');
     setOtp('');
     setGeneratedOtp('');
     setIsOtpSent(false);
     setOtpTimer(0);
-    
+
     // Reset common states
     setAlert({ show: false, message: '', type: '' });
     setIsLoading(false);
@@ -165,8 +164,8 @@ const VerificationSystem = ({ show, onHide, onVerificationComplete }) => {
         {/* Verification Type Selector */}
         <Nav variant="pills" className="mb-4 verification-nav">
           <Nav.Item>
-            <Nav.Link 
-              active={verificationType === 'phone'} 
+            <Nav.Link
+              active={verificationType === 'phone'}
               onClick={() => setVerificationType('phone')}
               className="verification-tab"
             >
@@ -175,8 +174,8 @@ const VerificationSystem = ({ show, onHide, onVerificationComplete }) => {
             </Nav.Link>
           </Nav.Item>
           <Nav.Item>
-            <Nav.Link 
-              active={verificationType === 'bill'} 
+            <Nav.Link
+              active={verificationType === 'bill'}
               onClick={() => setVerificationType('bill')}
               className="verification-tab"
             >
@@ -205,13 +204,14 @@ const VerificationSystem = ({ show, onHide, onVerificationComplete }) => {
                         onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, '').slice(0, 10))}
                         disabled={isOtpSent}
                         maxLength={10}
+                        style={{ height: '48px', fontSize: '15px' }}
                       />
                     </InputGroup>
                   </Form.Group>
 
                   {!isOtpSent ? (
-                    <Button 
-                      variant="success" 
+                    <Button
+                      variant="success"
                       onClick={sendOtp}
                       disabled={isLoading || phoneNumber.length !== 10}
                       className="w-100 mb-3"
@@ -247,13 +247,14 @@ const VerificationSystem = ({ show, onHide, onVerificationComplete }) => {
                           onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
                           maxLength={6}
                           className="text-center otp-input"
+                          style={{ height: '48px', fontSize: '15px', letterSpacing: '0.5em' }}
                         />
                       </Form.Group>
 
                       <Row className="g-2">
                         <Col>
-                          <Button 
-                            variant="primary" 
+                          <Button
+                            variant="primary"
                             onClick={verifyOtp}
                             disabled={isLoading || otp.length !== 6}
                             className="w-100"
@@ -272,8 +273,8 @@ const VerificationSystem = ({ show, onHide, onVerificationComplete }) => {
                           </Button>
                         </Col>
                         <Col xs="auto">
-                          <Button 
-                            variant="outline-secondary" 
+                          <Button
+                            variant="outline-secondary"
                             onClick={() => {
                               setIsOtpSent(false);
                               setOtp('');
@@ -288,8 +289,8 @@ const VerificationSystem = ({ show, onHide, onVerificationComplete }) => {
 
                       {otpTimer === 0 && (
                         <div className="text-center mt-3">
-                          <Button 
-                            variant="link" 
+                          <Button
+                            variant="link"
                             onClick={sendOtp}
                             disabled={isLoading}
                             className="p-0"
@@ -319,6 +320,7 @@ const VerificationSystem = ({ show, onHide, onVerificationComplete }) => {
                       placeholder="Enter bill number"
                       value={billNumber}
                       onChange={(e) => setBillNumber(e.target.value)}
+                      style={{ height: '48px', fontSize: '15px' }}
                     />
                   </Form.Group>
                   <Form.Group className="mb-3">
@@ -333,11 +335,12 @@ const VerificationSystem = ({ show, onHide, onVerificationComplete }) => {
                         placeholder="Enter bill amount"
                         value={billAmount}
                         onChange={(e) => setBillAmount(e.target.value)}
+                        style={{ height: '48px', fontSize: '15px' }}
                       />
                     </InputGroup>
                   </Form.Group>
-                  <Button 
-                    variant="primary" 
+                  <Button
+                    variant="primary"
                     onClick={handleBillVerification}
                     disabled={isLoading || !billNumber || !billAmount}
                     className="w-100"

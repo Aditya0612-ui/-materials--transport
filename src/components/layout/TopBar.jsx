@@ -1,8 +1,7 @@
+// src/components/layout/TopBar.jsx
 import React, { useState } from 'react';
-import { Navbar, Nav, Button, Dropdown, Badge, Form, InputGroup } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import 'boxicons/css/boxicons.min.css';
-import '../../styles/topbar.css';
 import AddVehicleForm from '../forms/AddVehicleForm';
 import AddFuelRecordForm from '../forms/AddFuelRecordForm';
 import LanguageSwitcher from '../common/LanguageSwitcher';
@@ -15,9 +14,11 @@ const TopBar = ({ sidebarCollapsed, setSidebarCollapsed, activeTab }) => {
   const [showAddVehicleForm, setShowAddVehicleForm] = useState(false);
   const [showAddFuelRecordForm, setShowAddFuelRecordForm] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
 
   const handleLogout = () => {
     logout();
+    setShowUserMenu(false);
   };
 
   const handleLoginSuccess = (userData) => {
@@ -27,7 +28,7 @@ const TopBar = ({ sidebarCollapsed, setSidebarCollapsed, activeTab }) => {
   const getPageTitle = (tab) => {
     // Check if mobile view
     const isMobile = window.innerWidth < 768;
-    
+
     const titles = {
       'overview': t('dashboard.overview'),
       'transport': isMobile ? 'Transport System' : t('transport.systemTitle'),
@@ -73,114 +74,129 @@ const TopBar = ({ sidebarCollapsed, setSidebarCollapsed, activeTab }) => {
   };
 
   return (
-    <Navbar className="topbar" expand="lg">
-      <div className="d-flex align-items-center justify-content-between w-100">
+    <header className="h-16 bg-white border-b border-slate-100 flex items-center justify-between px-4 lg:px-8 sticky top-0 z-30 backdrop-blur-sm bg-white/80">
+      <div className="flex items-center flex-1">
         {/* Mobile Menu Toggle */}
-        <Button
-          variant="link"
-          className="mobile-menu-toggle d-lg-none me-2"
+        <button
+          className="p-2 -ml-2 mr-2 rounded-lg text-slate-500 hover:bg-slate-50 lg:hidden"
           onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
         >
-          <i className="bx bx-menu"></i>
-        </Button>
+          <i className="bx bx-menu text-2xl"></i>
+        </button>
 
         {/* Page Title - Hidden on mobile */}
-        <div className="page-title-section flex-grow-1 d-none d-md-block">
-          <div className="d-flex align-items-center">
-            <i className={`page-icon ${getPageIcon(activeTab)}`}></i>
-            <div className="page-title-text">
-              <h5 className="mb-0">{getPageTitle(activeTab)}</h5>
+        <div className="hidden md:flex items-center">
+          <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-emerald-600 mr-3">
+            <i className={`${getPageIcon(activeTab)} text-xl`}></i>
+          </div>
+          <div>
+            <h1 className="text-lg font-bold text-slate-800 leading-tight">{getPageTitle(activeTab)}</h1>
+            <div className="flex items-center text-xs text-slate-500 mt-0.5">
               {getPageSubtitle(activeTab) ? (
-                <small className="text-muted">
-                  <i className="bx bx-info-circle me-1"></i>
+                <>
+                  <i className="bx bx-info-circle mr-1"></i>
                   {getPageSubtitle(activeTab)}
-                </small>
+                </>
               ) : (
-                <small className="text-muted">
+                <span>
                   {new Date().toLocaleDateString('en-IN', {
                     weekday: 'long',
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric'
                   })}
-                </small>
+                </span>
               )}
             </div>
           </div>
         </div>
+      </div>
 
-        <div className="quick-actions d-flex align-items-center ms-auto">
-          {/* Language Switcher - Hide on mobile */}
-          <div className="me-2 d-none d-md-block">
-            <LanguageSwitcher />
-          </div>
+      <div className="flex items-center space-x-2 lg:space-x-4">
+        {/* Language Switcher - Hide on mobile */}
+        <div className="hidden md:block">
+          <LanguageSwitcher />
+        </div>
 
-          {/* User Profile / Login */}
-          {isAuthenticated ? (
-            <Dropdown>
-              <Dropdown.Toggle variant="link" className="user-profile-btn p-0">
-                <div className="user-avatar-small">
-                  {photoURL ? (
-                    <img 
-                      src={photoURL} 
-                      alt="User Avatar" 
-                      className="user-avatar-img"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                        e.target.nextSibling.style.display = 'flex';
-                      }}
-                    />
-                  ) : null}
-                  <i className={`bx bx-user ${photoURL ? 'd-none' : ''}`}></i>
-                </div>
-              </Dropdown.Toggle>
-              <Dropdown.Menu align="end" className="user-menu">
-                <Dropdown.Header>
-                  <div className="user-info">
-                    <div className="user-name">
-                      {adminData?.displayName || adminData?.username || adminData?.email?.split('@')[0] || 'Admin'}
+        {/* User Profile / Login */}
+        {isAuthenticated ? (
+          <div className="relative">
+            <button
+              className="flex items-center space-x-2 p-1.5 rounded-full hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100"
+              onClick={() => setShowUserMenu(!showUserMenu)}
+              onBlur={() => setTimeout(() => setShowUserMenu(false), 200)}
+            >
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white shadow-md shadow-emerald-200 overflow-hidden">
+                {photoURL ? (
+                  <img
+                    src={photoURL}
+                    alt="User"
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      e.target.nextSibling.style.display = 'flex';
+                    }}
+                  />
+                ) : null}
+                <i className={`bx bx-user ${photoURL ? 'hidden' : ''}`}></i>
+              </div>
+              <i className="bx bx-chevron-down text-slate-400 hidden md:block"></i>
+            </button>
+
+            {/* Dropdown Menu */}
+            {showUserMenu && (
+              <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-2xl shadow-xl border border-slate-100 py-2 animate-fadeIn origin-top-right">
+                <div className="px-4 py-3 border-b border-slate-50">
+                  <p className="text-sm font-semibold text-slate-800 truncate">
+                    {adminData?.displayName || adminData?.username || adminData?.email?.split('@')[0] || 'Admin'}
+                  </p>
+                  <p className="text-xs text-slate-500 truncate">
+                    {adminData?.email || 'admin@dashboard.com'}
+                  </p>
+                  {provider && provider !== 'local' && (
+                    <div className="mt-1 flex items-center text-xs text-slate-400">
+                      <i className={`bx bxl-${provider === 'google.com' ? 'google' : provider === 'facebook.com' ? 'facebook' : provider === 'twitter.com' ? 'twitter' : provider === 'github.com' ? 'github' : 'user'} mr-1`}></i>
+                      {provider === 'google.com' ? 'Google' : provider === 'facebook.com' ? 'Facebook' : provider === 'twitter.com' ? 'Twitter' : provider === 'github.com' ? 'GitHub' : provider}
                     </div>
-                    <small className="user-email">
-                      {adminData?.email || 'admin@dashboard.com'}
-                    </small>
-                    {provider && provider !== 'local' && (
-                      <small className="user-provider">
-                        <i className={`bx bxl-${provider === 'google.com' ? 'google' : provider === 'facebook.com' ? 'facebook' : provider === 'twitter.com' ? 'twitter' : provider === 'github.com' ? 'github' : 'user'} me-1`}></i>
-                        {provider === 'google.com' ? 'Google' : provider === 'facebook.com' ? 'Facebook' : provider === 'twitter.com' ? 'Twitter' : provider === 'github.com' ? 'GitHub' : provider}
-                      </small>
-                    )}
-                  </div>
-                </Dropdown.Header>
-                <Dropdown.Divider />
-                {/* Show language switcher in menu on mobile */}
-                <div className="d-md-none px-3 py-2">
+                  )}
+                </div>
+
+                <div className="md:hidden px-4 py-2 border-b border-slate-50">
                   <LanguageSwitcher />
                 </div>
-                <Dropdown.Divider className="d-md-none" />
-                <Dropdown.Item>
-                  <i className="bx bx-cog me-2"></i> {t('navigation.settings')}
-                </Dropdown.Item>
-                <Dropdown.Item>
-                  <i className="bx bx-user me-2"></i> {t('navigation.profile')}
-                </Dropdown.Item>
-                <Dropdown.Divider />
-                <Dropdown.Item className="text-danger" onClick={handleLogout}>
-                  <i className="bx bx-log-out me-2"></i> {t('navigation.logout')}
-                </Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
-          ) : (
-            <Button
-              variant="outline-primary"
-              size="sm"
-              onClick={() => setShowLoginModal(true)}
-              className="login-btn"
-            >
-              <i className="bx bx-log-in me-1"></i>
-              Login
-            </Button>
-          )}
-        </div>
+
+                <div className="py-1">
+                  <button className="w-full text-left px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-emerald-600 flex items-center">
+                    <i className="bx bx-cog mr-2 text-lg"></i>
+                    {t('navigation.settings')}
+                  </button>
+                  <button className="w-full text-left px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-emerald-600 flex items-center">
+                    <i className="bx bx-user mr-2 text-lg"></i>
+                    {t('navigation.profile')}
+                  </button>
+                </div>
+
+                <div className="border-t border-slate-50 py-1">
+                  <button
+                    className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center"
+                    onClick={handleLogout}
+                  >
+                    <i className="bx bx-log-out mr-2 text-lg"></i>
+                    {t('navigation.logout')}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        ) : (
+          <button
+            onClick={() => setShowLoginModal(true)}
+            className="flex items-center px-4 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 transition-colors shadow-lg shadow-emerald-200 font-medium text-sm"
+          >
+            <i className="bx bx-log-in mr-2"></i>
+            Login
+          </button>
+        )}
       </div>
 
       {/* Add Vehicle Form Modal */}
@@ -201,7 +217,7 @@ const TopBar = ({ sidebarCollapsed, setSidebarCollapsed, activeTab }) => {
         onHide={() => setShowLoginModal(false)}
         onLoginSuccess={handleLoginSuccess}
       />
-    </Navbar>
+    </header>
   );
 };
 

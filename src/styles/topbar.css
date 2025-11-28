@@ -10,6 +10,7 @@
   position: sticky;
   top: 0;
   z-index: 999;
+  margin: 0;
 }
 
 /* Login Button Styles */

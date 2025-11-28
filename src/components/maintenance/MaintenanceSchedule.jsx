@@ -1,20 +1,5 @@
 // src/components/maintenance/MaintenanceSchedule.jsx
 import React, { useState } from 'react';
-import { 
-  Container, 
-  Row, 
-  Col, 
-  Card, 
-  Table, 
-  Button, 
-  Badge, 
-  Modal, 
-  Form, 
-  InputGroup,
-  Dropdown,
-  Alert,
-  ProgressBar
-} from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useMaintenanceContext } from '../../context/MaintenanceContext';
 import './MaintenanceStyles.css';
@@ -63,20 +48,20 @@ const MaintenanceSchedule = () => {
   // Filter and sort maintenance schedule
   const filteredSchedule = maintenanceSchedule
     .filter(item => {
-      const matchesSearch = 
+      const matchesSearch =
         item.vehicleId.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.vehicleName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.serviceType.toLowerCase().includes(searchTerm.toLowerCase());
-      
+
       const matchesStatus = filterStatus === 'all' || item.status === filterStatus;
       const matchesPriority = filterPriority === 'all' || item.priority === filterPriority;
-      
+
       return matchesSearch && matchesStatus && matchesPriority;
     })
     .sort((a, b) => {
       let aValue = a[sortBy];
       let bValue = b[sortBy];
-      
+
       if (sortBy === 'scheduledDate') {
         aValue = new Date(aValue);
         bValue = new Date(bValue);
@@ -84,7 +69,7 @@ const MaintenanceSchedule = () => {
         aValue = parseFloat(aValue);
         bValue = parseFloat(bValue);
       }
-      
+
       if (sortOrder === 'asc') {
         return aValue > bValue ? 1 : -1;
       } else {
@@ -151,14 +136,14 @@ const MaintenanceSchedule = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
-    
+
     // Validate required fields
-    if (!formData.vehicleId || !formData.vehicleName || !formData.serviceType || 
-        !formData.scheduledDate || !formData.scheduledTime || !formData.estimatedCost) {
+    if (!formData.vehicleId || !formData.vehicleName || !formData.serviceType ||
+      !formData.scheduledDate || !formData.scheduledTime || !formData.estimatedCost) {
       setError('Please fill in all required fields');
       return;
     }
-    
+
     const scheduleData = {
       ...formData,
       estimatedCost: parseFloat(formData.estimatedCost) || 0,
@@ -200,7 +185,7 @@ const MaintenanceSchedule = () => {
         console.log('Deleting schedule with ID:', id);
         const result = await deleteMaintenanceSchedule(id);
         console.log('Delete result:', result);
-        
+
         if (!result || !result.success) {
           setError(result?.error || 'Failed to delete maintenance schedule');
         }
@@ -214,370 +199,395 @@ const MaintenanceSchedule = () => {
 
   const getStatusBadge = (status) => {
     const statusColors = {
-      'Scheduled': 'primary',
-      'In Progress': 'warning',
-      'Completed': 'success',
-      'Pending': 'secondary',
-      'Cancelled': 'danger'
+      'Scheduled': 'bg-blue-100 text-blue-700 border-blue-200',
+      'In Progress': 'bg-amber-100 text-amber-700 border-amber-200',
+      'Completed': 'bg-emerald-100 text-emerald-700 border-emerald-200',
+      'Pending': 'bg-slate-100 text-slate-700 border-slate-200',
+      'Cancelled': 'bg-red-100 text-red-700 border-red-200'
     };
-    return <Badge bg={statusColors[status] || 'secondary'}>{status}</Badge>;
+    return (
+      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${statusColors[status] || 'bg-slate-100 text-slate-700 border-slate-200'}`}>
+        {status}
+      </span>
+    );
   };
 
   const getPriorityBadge = (priority) => {
     const priorityColors = {
-      'Critical': 'danger',
-      'High': 'warning',
-      'Medium': 'info',
-      'Low': 'success'
+      'Critical': 'bg-red-100 text-red-700 border-red-200',
+      'High': 'bg-orange-100 text-orange-700 border-orange-200',
+      'Medium': 'bg-blue-100 text-blue-700 border-blue-200',
+      'Low': 'bg-emerald-100 text-emerald-700 border-emerald-200'
     };
-    return <Badge bg={priorityColors[priority] || 'secondary'}>{priority}</Badge>;
+    return (
+      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${priorityColors[priority] || 'bg-slate-100 text-slate-700 border-slate-200'}`}>
+        {priority}
+      </span>
+    );
   };
 
   const getMaintenanceTypeBadge = (type) => {
     const typeColors = {
-      'Preventive': 'success',
-      'Corrective': 'warning',
-      'Emergency': 'danger'
+      'Preventive': 'bg-emerald-100 text-emerald-700 border-emerald-200',
+      'Corrective': 'bg-amber-100 text-amber-700 border-amber-200',
+      'Emergency': 'bg-red-100 text-red-700 border-red-200'
     };
-    return <Badge bg={typeColors[type] || 'secondary'}>{type}</Badge>;
+    return (
+      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${typeColors[type] || 'bg-slate-100 text-slate-700 border-slate-200'}`}>
+        {type}
+      </span>
+    );
   };
 
   return (
-    <Container fluid className="maintenance-schedule-container">
-      <Row className="mb-4">
-        <Col>
-          <div className="d-flex justify-content-between align-items-center">
-            <div>
-              <h2 className="mb-0">
-                <i className="bx bx-calendar me-2"></i>
-                {t('maintenanceSchedule.title')}
-              </h2>
-              <p className="text-muted mb-0">{t('maintenanceSchedule.subtitle')}</p>
-            </div>
-            <Button 
-              variant="success" 
-              onClick={() => handleShowModal()}
-              className="d-flex align-items-center"
-            >
-              <i className="bx bx-plus me-2"></i>
-              {t('maintenanceSchedule.scheduleButton')}
-            </Button>
-          </div>
-        </Col>
-      </Row>
+    <div className="p-6 space-y-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
+            <i className="bx bx-calendar text-emerald-600"></i>
+            {t('maintenanceSchedule.title')}
+          </h2>
+          <p className="text-slate-500 mt-1">{t('maintenanceSchedule.subtitle')}</p>
+        </div>
+        <button
+          onClick={() => handleShowModal()}
+          className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors shadow-sm"
+        >
+          <i className="bx bx-plus text-xl"></i>
+          {t('maintenanceSchedule.scheduleButton')}
+        </button>
+      </div>
 
       {/* Error Alert */}
       {error && (
-        <Row className="mb-4">
-          <Col>
-            <Alert variant="danger" dismissible onClose={() => setError(null)}>
-              <Alert.Heading>Error</Alert.Heading>
-              {error}
-            </Alert>
-          </Col>
-        </Row>
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <i className="bx bx-error-circle text-xl"></i>
+            <span>{error}</span>
+          </div>
+          <button onClick={() => setError(null)} className="text-red-500 hover:text-red-700">
+            <i className="bx bx-x text-xl"></i>
+          </button>
+        </div>
       )}
 
       {/* Filters and Search */}
-      <Row className="mb-4">
-        <Col md={4}>
-          <InputGroup>
-            <InputGroup.Text>
-              <i className="bx bx-search"></i>
-            </InputGroup.Text>
-            <Form.Control
-              type="text"
-              placeholder={t('maintenanceSchedule.searchPlaceholder')}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </InputGroup>
-        </Col>
-        <Col md={2}>
-          <Form.Select
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-          >
-            <option value="all">{t('maintenanceSchedule.allStatus')}</option>
-            <option value="Scheduled">{t('maintenanceSchedule.scheduled')}</option>
-            <option value="In Progress">{t('serviceHistory.inProgress')}</option>
-            <option value="Pending">{t('maintenanceSchedule.pending')}</option>
-            <option value="Completed">{t('serviceHistory.completed')}</option>
-          </Form.Select>
-        </Col>
-        <Col md={2}>
-          <Form.Select
-            value={filterPriority}
-            onChange={(e) => setFilterPriority(e.target.value)}
-          >
-            <option value="all">{t('maintenanceSchedule.allPriority')}</option>
-            <option value="Critical">{t('maintenanceSchedule.critical')}</option>
-            <option value="High">{t('maintenanceSchedule.high')}</option>
-            <option value="Medium">{t('maintenanceSchedule.medium')}</option>
-            <option value="Low">{t('maintenanceSchedule.low')}</option>
-          </Form.Select>
-        </Col>
-        <Col md={2}>
-          <Form.Select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-          >
-            <option value="scheduledDate">{t('maintenanceSchedule.sortByDate')}</option>
-            <option value="priority">{t('maintenanceSchedule.sortByPriority')}</option>
-            <option value="estimatedCost">{t('maintenanceSchedule.sortByCost')}</option>
-            <option value="vehicleName">{t('maintenanceSchedule.sortByVehicle')}</option>
-          </Form.Select>
-        </Col>
-        <Col md={2}>
-          <Button
-            variant="outline-secondary"
-            onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-            className="w-100"
-          >
-            <i className={`bx bx-sort-${sortOrder === 'asc' ? 'up' : 'down'}`}></i>
-            {sortOrder === 'asc' ? t('common.ascending') : t('common.descending')}
-          </Button>
-        </Col>
-      </Row>
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+          <div className="lg:col-span-2">
+            <div className="relative">
+              <i className="bx bx-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl"></i>
+              <input
+                type="text"
+                placeholder={t('maintenanceSchedule.searchPlaceholder')}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 h-12 bg-slate-50 border border-slate-200 rounded-lg text-base text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                style={{ color: '#1e293b' }}
+              />
+            </div>
+          </div>
+          <div>
+            <select
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+              className="w-full px-4 h-12 bg-slate-50 border border-slate-200 rounded-lg text-base text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+              style={{ color: '#1e293b' }}
+            >
+              <option value="all">{t('maintenanceSchedule.allStatus')}</option>
+              <option value="Scheduled">{t('maintenanceSchedule.scheduled')}</option>
+              <option value="In Progress">{t('serviceHistory.inProgress')}</option>
+              <option value="Pending">{t('maintenanceSchedule.pending')}</option>
+              <option value="Completed">{t('serviceHistory.completed')}</option>
+            </select>
+          </div>
+          <div>
+            <select
+              value={filterPriority}
+              onChange={(e) => setFilterPriority(e.target.value)}
+              className="w-full px-4 h-12 bg-slate-50 border border-slate-200 rounded-lg text-base text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+              style={{ color: '#1e293b' }}
+            >
+              <option value="all">{t('maintenanceSchedule.allPriority')}</option>
+              <option value="Critical">{t('maintenanceSchedule.critical')}</option>
+              <option value="High">{t('maintenanceSchedule.high')}</option>
+              <option value="Medium">{t('maintenanceSchedule.medium')}</option>
+              <option value="Low">{t('maintenanceSchedule.low')}</option>
+            </select>
+          </div>
+          <div className="flex gap-2">
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="w-full px-4 h-12 bg-slate-50 border border-slate-200 rounded-lg text-base text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+              style={{ color: '#1e293b' }}
+            >
+              <option value="scheduledDate">{t('maintenanceSchedule.sortByDate')}</option>
+              <option value="priority">{t('maintenanceSchedule.sortByPriority')}</option>
+              <option value="estimatedCost">{t('maintenanceSchedule.sortByCost')}</option>
+              <option value="vehicleName">{t('maintenanceSchedule.sortByVehicle')}</option>
+            </select>
+            <button
+              onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+              className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg transition-colors border border-slate-200"
+              title={sortOrder === 'asc' ? t('common.ascending') : t('common.descending')}
+            >
+              <i className={`bx bx-sort-${sortOrder === 'asc' ? 'up' : 'down'} text-xl`}></i>
+            </button>
+          </div>
+        </div>
+      </div>
 
       {/* Maintenance Schedule Table */}
-      <Card className="border-0 shadow-sm">
-        <Card.Header className="bg-white border-bottom">
-          <h5 className="mb-0">
-            <i className="bx bx-list-ul me-2"></i>
-            {t('maintenanceSchedule.scheduledMaintenance')} ({filteredSchedule.length})
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+        <div className="p-4 border-b border-slate-100 bg-slate-50/50">
+          <h5 className="font-semibold text-slate-800 flex items-center gap-2">
+            <i className="bx bx-list-ul text-emerald-600"></i>
+            {t('maintenanceSchedule.scheduledMaintenance')}
+            <span className="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full text-xs">
+              {filteredSchedule.length}
+            </span>
           </h5>
-        </Card.Header>
-        <Card.Body className="p-0">
-          <div className="table-responsive">
-            <Table hover className="mb-0">
-              <thead className="table-light">
-                <tr>
-                  <th>{t('maintenanceSchedule.vehicleDetails')}</th>
-                  <th>{t('maintenanceSchedule.serviceInfo')}</th>
-                  <th>{t('maintenanceSchedule.schedule')}</th>
-                  <th>{t('maintenanceSchedule.priority')}</th>
-                  <th>{t('maintenanceSchedule.status')}</th>
-                  <th>{t('maintenanceSchedule.cost')}</th>
-                  <th>{t('maintenanceSchedule.technician')}</th>
-                  <th>{t('common.actions')}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredSchedule.length > 0 ? (
-                  filteredSchedule.map((schedule, index) => (
-                  <tr key={`${schedule.id}-${index}`}>
-                    <td>
+        </div>
+        <div className="overflow-x-auto scrollbar-white">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-slate-50 border-b border-slate-100 text-sm uppercase text-slate-700 font-semibold tracking-wider">
+                <th className="px-6 py-4">{t('maintenanceSchedule.vehicleDetails')}</th>
+                <th className="px-6 py-4">{t('maintenanceSchedule.serviceInfo')}</th>
+                <th className="px-6 py-4">{t('maintenanceSchedule.schedule')}</th>
+                <th className="px-6 py-4">{t('maintenanceSchedule.priority')}</th>
+                <th className="px-6 py-4">{t('maintenanceSchedule.status')}</th>
+                <th className="px-6 py-4">{t('maintenanceSchedule.cost')}</th>
+                <th className="px-6 py-4">{t('maintenanceSchedule.technician')}</th>
+                <th className="px-6 py-4 text-right">{t('common.actions')}</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-50">
+              {filteredSchedule.length > 0 ? (
+                filteredSchedule.map((schedule, index) => (
+                  <tr key={`${schedule.id}-${index}`} className="hover:bg-slate-50/50 transition-colors">
+                    <td className="px-6 py-4">
                       <div>
-                        <strong>{schedule.vehicleId}</strong>
-                        <br />
-                        <small className="text-muted">{schedule.vehicleName}</small>
-                        <br />
-                        <small className="text-info">
+                        <div className="font-bold text-slate-800 text-base">{schedule.vehicleId}</div>
+                        <div className="text-base text-slate-500">{schedule.vehicleName}</div>
+                        <div className="text-sm text-blue-600 mt-1">
                           {schedule.currentKm?.toLocaleString()} km
-                        </small>
+                        </div>
                       </div>
                     </td>
-                    <td>
-                      <div>
+                    <td className="px-6 py-4">
+                      <div className="space-y-1">
                         {getMaintenanceTypeBadge(schedule.maintenanceType)}
-                        <br />
-                        <strong>{schedule.serviceType}</strong>
-                        <br />
-                        <small className="text-muted">{schedule.serviceCenter}</small>
+                        <div className="font-medium text-slate-800 text-base">{schedule.serviceType}</div>
+                        <div className="text-sm text-slate-500">{schedule.serviceCenter}</div>
                       </div>
                     </td>
-                    <td>
+                    <td className="px-6 py-4">
                       <div>
-                        <strong>{new Date(schedule.scheduledDate).toLocaleDateString()}</strong>
-                        <br />
-                        <small className="text-muted">{schedule.scheduledTime}</small>
-                        <br />
-                        <small className="text-info">{schedule.estimatedDuration}</small>
+                        <div className="font-medium text-slate-800 text-base">{new Date(schedule.scheduledDate).toLocaleDateString()}</div>
+                        <div className="text-base text-slate-500">{schedule.scheduledTime}</div>
+                        <div className="text-sm text-blue-600 mt-1">{schedule.estimatedDuration}</div>
                       </div>
                     </td>
-                    <td>
+                    <td className="px-6 py-4">
                       {getPriorityBadge(schedule.priority)}
                     </td>
-                    <td>
+                    <td className="px-6 py-4">
                       {getStatusBadge(schedule.status)}
                     </td>
-                    <td>
-                      <strong>{formatCurrency(schedule.estimatedCost)}</strong>
+                    <td className="px-6 py-4">
+                      <div className="font-bold text-emerald-600 text-base">{formatCurrency(schedule.estimatedCost)}</div>
                     </td>
-                    <td>
+                    <td className="px-6 py-4">
                       <div>
-                        <strong>{schedule.assignedTechnician}</strong>
-                        <br />
-                        <small className="text-muted">{schedule.serviceContact}</small>
+                        <div className="font-medium text-slate-800 text-base">{schedule.assignedTechnician}</div>
+                        <div className="text-sm text-slate-500">{schedule.serviceContact}</div>
                       </div>
                     </td>
-                    <td>
-                      <div className="d-flex gap-2">
-                        <Button
-                          variant="outline-primary"
-                          size="sm"
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex justify-end gap-2">
+                        <button
                           onClick={() => handleShowModal(schedule)}
+                          className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-all"
                           title="Edit Schedule"
                         >
-                          <i className="bx bx-edit"></i>
-                        </Button>
-                        <Button
-                          variant="outline-danger"
-                          size="sm"
+                          <i className="bx bx-edit text-lg"></i>
+                        </button>
+                        <button
                           onClick={() => handleDelete(schedule.id)}
+                          className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-all"
                           title="Delete Schedule"
                         >
-                          <i className="bx bx-trash"></i>
-                        </Button>
+                          <i className="bx bx-trash text-lg"></i>
+                        </button>
                       </div>
                     </td>
                   </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="8" className="text-center py-5">
-                      <i className="bx bx-calendar-x display-1 text-muted"></i>
-                      <h5 className="mt-3 text-muted">No maintenance schedules found</h5>
-                      <p className="text-muted">Click "Schedule New Maintenance" to add your first maintenance schedule.</p>
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </Table>
-          </div>
-        </Card.Body>
-      </Card>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="8" className="text-center py-12">
+                    <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <i className="bx bx-calendar-x text-3xl text-slate-300"></i>
+                    </div>
+                    <h5 className="text-slate-600 font-medium mb-1">No maintenance schedules found</h5>
+                    <p className="text-slate-400 text-sm">Click "Schedule New Maintenance" to add your first maintenance schedule.</p>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
 
       {/* Add/Edit Modal */}
-      <Modal show={showModal} onHide={handleCloseModal} size="lg">
-        <Modal.Header closeButton>
-          <Modal.Title>
-            <i className="bx bx-calendar-plus me-2"></i>
-            {editingSchedule ? t('maintenanceSchedule.editMaintenanceSchedule') : t('maintenanceSchedule.scheduleNewMaintenance')}
-          </Modal.Title>
-        </Modal.Header>
-        <Form onSubmit={handleSubmit}>
-          <Modal.Body>
-            {loading && (
-              <div className="text-center mb-3">
-                <div className="spinner-border text-primary" role="status">
-                  <span className="visually-hidden">{t('common.loading')}</span>
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+              <h3 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+                <i className="bx bx-calendar-plus text-emerald-600"></i>
+                {editingSchedule ? t('maintenanceSchedule.editMaintenanceSchedule') : t('maintenanceSchedule.scheduleNewMaintenance')}
+              </h3>
+              <button
+                onClick={handleCloseModal}
+                className="text-slate-400 hover:text-slate-600 transition-colors"
+              >
+                <i className="bx bx-x text-2xl"></i>
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="p-6 space-y-6">
+              {loading && (
+                <div className="text-center py-4 bg-blue-50 rounded-lg border border-blue-100 text-blue-700">
+                  <div className="flex items-center justify-center gap-2">
+                    <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-700"></span>
+                    <span>{t('maintenanceSchedule.savingSchedule')}</span>
+                  </div>
                 </div>
-                <p className="mt-2 text-muted">{t('maintenanceSchedule.savingSchedule')}</p>
-              </div>
-            )}
-            <Row>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>{t('serviceHistory.vehicleId')} *</Form.Label>
-                  <Form.Control
+              )}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700">
+                    {t('serviceHistory.vehicleId')} *
+                  </label>
+                  <input
                     type="text"
                     name="vehicleId"
                     value={formData.vehicleId}
                     onChange={handleInputChange}
                     placeholder="e.g., TN34AB1234"
+                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                     required
                   />
-                </Form.Group>
-              </Col>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>{t('serviceHistory.vehicleName')} *</Form.Label>
-                  <Form.Control
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700">
+                    {t('serviceHistory.vehicleName')} *
+                  </label>
+                  <input
                     type="text"
                     name="vehicleName"
                     value={formData.vehicleName}
                     onChange={handleInputChange}
                     placeholder="e.g., Tata LPT 1613"
+                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                     required
                   />
-                </Form.Group>
-              </Col>
-            </Row>
+                </div>
+              </div>
 
-            <Row>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>{t('maintenanceSchedule.maintenanceType')} *</Form.Label>
-                  <Form.Select
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700">
+                    {t('maintenanceSchedule.maintenanceType')} *
+                  </label>
+                  <select
                     name="maintenanceType"
                     value={formData.maintenanceType}
                     onChange={handleInputChange}
+                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                     required
                   >
                     <option value="Preventive">{t('maintenanceSchedule.preventive')}</option>
                     <option value="Corrective">{t('maintenanceSchedule.corrective')}</option>
                     <option value="Emergency">{t('maintenanceSchedule.emergency')}</option>
-                  </Form.Select>
-                </Form.Group>
-              </Col>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>{t('serviceHistory.serviceType')} *</Form.Label>
-                  <Form.Control
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700">
+                    {t('serviceHistory.serviceType')} *
+                  </label>
+                  <input
                     type="text"
                     name="serviceType"
                     value={formData.serviceType}
                     onChange={handleInputChange}
                     placeholder="e.g., Engine Oil Change"
+                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                     required
                   />
-                </Form.Group>
-              </Col>
-            </Row>
+                </div>
+              </div>
 
-            <Row>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>{t('maintenanceSchedule.scheduledDate')} *</Form.Label>
-                  <Form.Control
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700">
+                    {t('maintenanceSchedule.scheduledDate')} *
+                  </label>
+                  <input
                     type="date"
                     name="scheduledDate"
                     value={formData.scheduledDate}
                     onChange={handleInputChange}
+                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                     required
                   />
-                </Form.Group>
-              </Col>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>{t('maintenanceSchedule.scheduledTime')} *</Form.Label>
-                  <Form.Control
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700">
+                    {t('maintenanceSchedule.scheduledTime')} *
+                  </label>
+                  <input
                     type="time"
                     name="scheduledTime"
                     value={formData.scheduledTime}
                     onChange={handleInputChange}
+                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                     required
                   />
-                </Form.Group>
-              </Col>
-            </Row>
+                </div>
+              </div>
 
-            <Row>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>{t('maintenanceSchedule.priority')} *</Form.Label>
-                  <Form.Select
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700">
+                    {t('maintenanceSchedule.priority')} *
+                  </label>
+                  <select
                     name="priority"
                     value={formData.priority}
                     onChange={handleInputChange}
+                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                     required
                   >
                     <option value="Low">{t('maintenanceSchedule.low')}</option>
                     <option value="Medium">{t('maintenanceSchedule.medium')}</option>
                     <option value="High">{t('maintenanceSchedule.high')}</option>
                     <option value="Critical">{t('maintenanceSchedule.critical')}</option>
-                  </Form.Select>
-                </Form.Group>
-              </Col>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>{t('maintenanceSchedule.status')} *</Form.Label>
-                  <Form.Select
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700">
+                    {t('maintenanceSchedule.status')} *
+                  </label>
+                  <select
                     name="status"
                     value={formData.status}
                     onChange={handleInputChange}
+                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                     required
                   >
                     <option value="Scheduled">{t('maintenanceSchedule.scheduled')}</option>
@@ -585,50 +595,38 @@ const MaintenanceSchedule = () => {
                     <option value="Completed">{t('serviceHistory.completed')}</option>
                     <option value="Pending">{t('maintenanceSchedule.pending')}</option>
                     <option value="Cancelled">{t('serviceHistory.cancelled')}</option>
-                  </Form.Select>
-                  <Form.Text className="text-muted">
+                  </select>
+                  <p className="text-xs text-slate-400 mt-1">
                     {t('maintenanceSchedule.currentStatus')}
-                  </Form.Text>
-                </Form.Group>
-              </Col>
-            </Row>
+                  </p>
+                </div>
+              </div>
 
-            {formData.status === 'Completed' && (
-              <Row>
-                <Col md={12}>
-                  <Alert variant="success" className="mb-3">
-                    <i className="bx bx-check-circle me-2"></i>
-                    {t('maintenanceSchedule.completedAlert')}
-                  </Alert>
-                </Col>
-              </Row>
-            )}
-            {formData.status === 'In Progress' && (
-              <Row>
-                <Col md={12}>
-                  <Alert variant="info" className="mb-3">
-                    <i className="bx bx-time-five me-2"></i>
-                    {t('maintenanceSchedule.inProgressAlert')}
-                  </Alert>
-                </Col>
-              </Row>
-            )}
-            {formData.status === 'Cancelled' && (
-              <Row>
-                <Col md={12}>
-                  <Alert variant="warning" className="mb-3">
-                    <i className="bx bx-error-circle me-2"></i>
-                    {t('maintenanceSchedule.cancelledAlert')}
-                  </Alert>
-                </Col>
-              </Row>
-            )}
+              {formData.status === 'Completed' && (
+                <div className="bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-3 rounded-lg flex items-center gap-2">
+                  <i className="bx bx-check-circle text-xl"></i>
+                  {t('maintenanceSchedule.completedAlert')}
+                </div>
+              )}
+              {formData.status === 'In Progress' && (
+                <div className="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-lg flex items-center gap-2">
+                  <i className="bx bx-time-five text-xl"></i>
+                  {t('maintenanceSchedule.inProgressAlert')}
+                </div>
+              )}
+              {formData.status === 'Cancelled' && (
+                <div className="bg-amber-50 border border-amber-200 text-amber-700 px-4 py-3 rounded-lg flex items-center gap-2">
+                  <i className="bx bx-error-circle text-xl"></i>
+                  {t('maintenanceSchedule.cancelledAlert')}
+                </div>
+              )}
 
-            <Row>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>{t('maintenanceSchedule.estimatedCost')} (₹) *</Form.Label>
-                  <Form.Control
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700">
+                    {t('maintenanceSchedule.estimatedCost')} (₹) *
+                  </label>
+                  <input
                     type="number"
                     name="estimatedCost"
                     value={formData.estimatedCost}
@@ -636,111 +634,127 @@ const MaintenanceSchedule = () => {
                     placeholder="0"
                     min="0"
                     step="100"
+                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                     required
                   />
-                </Form.Group>
-              </Col>
-            </Row>
-
-            <Row>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>{t('maintenanceSchedule.estimatedDuration')}</Form.Label>
-                  <Form.Control
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700">
+                    {t('maintenanceSchedule.estimatedDuration')}
+                  </label>
+                  <input
                     type="text"
                     name="estimatedDuration"
                     value={formData.estimatedDuration}
                     onChange={handleInputChange}
                     placeholder="e.g., 2 hours"
+                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                   />
-                </Form.Group>
-              </Col>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>{t('maintenanceSchedule.assignedTechnician')}</Form.Label>
-                  <Form.Control
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700">
+                    {t('maintenanceSchedule.assignedTechnician')}
+                  </label>
+                  <input
                     type="text"
                     name="assignedTechnician"
                     value={formData.assignedTechnician}
                     onChange={handleInputChange}
                     placeholder="e.g., Rajesh Kumar"
+                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                   />
-                </Form.Group>
-              </Col>
-            </Row>
-
-            <Row>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>{t('serviceHistory.serviceCenter')}</Form.Label>
-                  <Form.Control
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700">
+                    {t('serviceHistory.serviceCenter')}
+                  </label>
+                  <input
                     type="text"
                     name="serviceCenter"
                     value={formData.serviceCenter}
                     onChange={handleInputChange}
                     placeholder="e.g., Tata Motors Service Center"
+                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                   />
-                </Form.Group>
-              </Col>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>{t('maintenanceSchedule.serviceContact')}</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="serviceContact"
-                    value={formData.serviceContact}
-                    onChange={handleInputChange}
-                    placeholder="e.g., +91 9876543210"
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
+                </div>
+              </div>
 
-            <Form.Group className="mb-3">
-              <Form.Label>{t('maintenanceSchedule.description')}</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={3}
-                name="description"
-                value={formData.description}
-                onChange={handleInputChange}
-                placeholder={t('maintenanceSchedule.descriptionPlaceholder')}
-              />
-            </Form.Group>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-700">
+                  {t('maintenanceSchedule.serviceContact')}
+                </label>
+                <input
+                  type="text"
+                  name="serviceContact"
+                  value={formData.serviceContact}
+                  onChange={handleInputChange}
+                  placeholder="e.g., +91 9876543210"
+                  className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                />
+              </div>
 
-            <Form.Group className="mb-3">
-              <Form.Label>{t('maintenanceSchedule.additionalNotes')}</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={2}
-                name="notes"
-                value={formData.notes}
-                onChange={handleInputChange}
-                placeholder={t('maintenanceSchedule.notesPlaceholder')}
-              />
-            </Form.Group>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleCloseModal}>
-              {t('common.cancel')}
-            </Button>
-            <Button variant="success" type="submit" disabled={loading}>
-              {loading ? (
-                <>
-                  <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                  {t('maintenanceSchedule.saving')}
-                </>
-              ) : (
-                <>
-                  <i className="bx bx-save me-2"></i>
-                  {editingSchedule ? t('maintenanceSchedule.updateSchedule') : t('maintenanceSchedule.scheduleMaintenance')}
-                </>
-              )}
-            </Button>
-          </Modal.Footer>
-        </Form>
-      </Modal>
-    </Container>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-700">
+                  {t('maintenanceSchedule.description')}
+                </label>
+                <textarea
+                  rows={3}
+                  name="description"
+                  value={formData.description}
+                  onChange={handleInputChange}
+                  placeholder={t('maintenanceSchedule.descriptionPlaceholder')}
+                  className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-700">
+                  {t('maintenanceSchedule.additionalNotes')}
+                </label>
+                <textarea
+                  rows={2}
+                  name="notes"
+                  value={formData.notes}
+                  onChange={handleInputChange}
+                  placeholder={t('maintenanceSchedule.notesPlaceholder')}
+                  className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                />
+              </div>
+
+              <div className="pt-4 border-t border-slate-100 flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={handleCloseModal}
+                  className="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium hover:bg-slate-100 rounded-lg transition-colors"
+                >
+                  {t('common.cancel')}
+                </button>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg shadow-sm shadow-emerald-200 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {loading ? (
+                    <>
+                      <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
+                      {t('maintenanceSchedule.saving')}
+                    </>
+                  ) : (
+                    <>
+                      <i className="bx bx-save"></i>
+                      {editingSchedule ? t('maintenanceSchedule.updateSchedule') : t('maintenanceSchedule.scheduleMaintenance')}
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 

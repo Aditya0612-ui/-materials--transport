@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Table, Button, Form, Row, Col, Badge, Modal, InputGroup, Container, Alert, Spinner, OverlayTrigger, Popover } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { exportToExcel } from '../../utils/excelExport';
 import firebaseService from '../../services/firebaseService';
 import 'boxicons/css/boxicons.min.css';
-import './FuelStyles.css';
 
 const FuelPurchaseHistory = () => {
   const { t } = useTranslation();
@@ -63,7 +61,7 @@ const FuelPurchaseHistory = () => {
       filtered = filtered.filter(item => item.fuelType.toLowerCase() === filters.fuelType);
     }
     if (filters.vehicleNumber) {
-      filtered = filtered.filter(item => 
+      filtered = filtered.filter(item =>
         item.vehicleNumber.toLowerCase().includes(filters.vehicleNumber.toLowerCase())
       );
     }
@@ -81,7 +79,7 @@ const FuelPurchaseHistory = () => {
     setError(null);
 
     const totalAmount = parseFloat(newPurchase.quantity) * parseFloat(newPurchase.pricePerLiter);
-    
+
     const purchase = {
       ...newPurchase,
       quantity: parseFloat(newPurchase.quantity),
@@ -186,10 +184,17 @@ const FuelPurchaseHistory = () => {
   };
 
   const getStatusBadge = (status) => {
+    const variants = {
+      completed: 'bg-emerald-100 text-emerald-700 border-emerald-200',
+      pending: 'bg-amber-100 text-amber-700 border-amber-200',
+      failed: 'bg-red-100 text-red-700 border-red-200'
+    };
+
     return (
-      <Badge bg={status === 'completed' ? 'success' : 'warning'}>
+      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${variants[status] || 'bg-slate-100 text-slate-700 border-slate-200'}`}>
+        <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${status === 'completed' ? 'bg-emerald-500' : status === 'pending' ? 'bg-amber-500' : 'bg-red-500'}`}></span>
         {status.toUpperCase()}
-      </Badge>
+      </span>
     );
   };
 
@@ -215,416 +220,356 @@ const FuelPurchaseHistory = () => {
     exportToExcel(filteredData, 'Fuel_Purchase_History', 'Fuel Purchases', columns);
   };
 
-  // Create popover content for fuel purchase details
-  const createPurchasePopover = (purchase) => (
-    <Popover id={`popover-${purchase.id}`} style={{ maxWidth: '350px' }}>
-      <Popover.Header as="h3">
-        <div className="d-flex justify-content-between align-items-center">
-          <span>Purchase Details</span>
-          {getStatusBadge(purchase.status)}
-        </div>
-      </Popover.Header>
-      <Popover.Body>
-        <div className="mb-2">
-          <strong>Purchase ID:</strong> {purchase.id}
-        </div>
-        <div className="mb-2">
-          <strong>Vehicle:</strong> {purchase.vehicleNumber}
-        </div>
-        <div className="mb-2">
-          <strong>Date:</strong>
-          <div><small className="text-muted"><i className="bx bx-calendar me-1"></i>{new Date(purchase.date).toLocaleDateString('en-IN')}</small></div>
-        </div>
-        <div className="mb-2">
-          <strong>Fuel Type:</strong> 
-          <Badge 
-            bg={purchase.fuelType === 'Diesel' ? 'warning' : purchase.fuelType === 'Petrol' ? 'danger' : 'info'} 
-            className="ms-1"
-          >
-            {purchase.fuelType}
-          </Badge>
-        </div>
-        <div className="mb-2">
-          <strong>Quantity:</strong> {purchase.quantity} Liters
-        </div>
-        <div className="mb-2">
-          <strong>Rate:</strong> ₹{purchase.pricePerLiter}/L
-        </div>
-        <div className="mb-2">
-          <strong>Total Amount:</strong> <span className="text-success fw-bold">₹{purchase.totalAmount.toFixed(2)}</span>
-        </div>
-        <div className="mb-2">
-          <strong>Pump:</strong> {purchase.pumpName}
-        </div>
-        <div className="mb-0">
-          <strong>Bill No:</strong> {purchase.billNumber}
-        </div>
-      </Popover.Body>
-    </Popover>
-  );
-
   return (
-    <Container fluid className="fuel-purchase-history py-4">
+    <div className="p-6 space-y-6">
       {/* Header Section */}
-      <Row className="mb-4">
-        <Col>
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <div>
-              <h2 className="mb-1"><i className="bx bx-gas-pump me-2 text-primary"></i>{t('fuelPurchase.title')}</h2>
-              <p className="text-muted mb-0">{t('fuelPurchase.subtitle')}</p>
-            </div>
-            <Button 
-              variant="primary" 
-              size="lg"
-              onClick={() => setShowAddModal(true)}
-              className="d-flex align-items-center gap-2"
-            >
-              <i className="bx bx-plus"></i>
-              {t('fuelPurchase.addButton')}
-            </Button>
-          </div>
-        </Col>
-      </Row>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
+            <i className="bx bx-gas-pump text-emerald-600"></i>
+            {t('fuelPurchase.title')}
+          </h2>
+          <p className="text-slate-500 mt-1">{t('fuelPurchase.subtitle')}</p>
+        </div>
+        <button
+          onClick={() => setShowAddModal(true)}
+          className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors shadow-sm"
+        >
+          <i className="bx bx-plus text-xl"></i>
+          {t('fuelPurchase.addButton')}
+        </button>
+      </div>
 
       {/* Filters Section */}
-      <Row className="mb-4">
-        <Col>
-          <Card className="shadow-sm">
-            <Card.Header className="bg-light">
-              <h6 className="mb-0"><i className="bx bx-filter me-2"></i>{t('fuelPurchase.filtersSearch')}</h6>
-            </Card.Header>
-            <Card.Body>
-              <Row className="g-3">
-                <Col lg={3} md={6}>
-                  <Form.Group>
-                    <Form.Label className="fw-semibold">
-                      <i className="bx bx-calendar me-1 text-primary"></i>{t('fuelPurchase.fromDate')}
-                    </Form.Label>
-                    <Form.Control
-                      type="date"
-                      value={filters.dateFrom}
-                      onChange={(e) => setFilters(prev => ({ ...prev, dateFrom: e.target.value }))}
-                      className="form-control-lg"
-                    />
-                  </Form.Group>
-                </Col>
-                <Col lg={3} md={6}>
-                  <Form.Group>
-                    <Form.Label className="fw-semibold">
-                      <i className="bx bx-calendar me-1 text-primary"></i>{t('fuelPurchase.toDate')}
-                    </Form.Label>
-                    <Form.Control
-                      type="date"
-                      value={filters.dateTo}
-                      onChange={(e) => setFilters(prev => ({ ...prev, dateTo: e.target.value }))}
-                      className="form-control-lg"
-                    />
-                  </Form.Group>
-                </Col>
-                <Col lg={3} md={6}>
-                  <Form.Group>
-                    <Form.Label className="fw-semibold">
-                      <i className="bx bx-gas-pump me-1 text-primary"></i>{t('fuelPurchase.fuelType')}
-                    </Form.Label>
-                    <Form.Select
-                      value={filters.fuelType}
-                      onChange={(e) => setFilters(prev => ({ ...prev, fuelType: e.target.value }))}
-                      className="form-control-lg"
-                    >
-                      <option value="all">{t('fuelPurchase.allTypes')}</option>
-                      <option value="petrol">{t('fuelUse.petrol')}</option>
-                      <option value="diesel">{t('fuelUse.diesel')}</option>
-                      <option value="cng">{t('fuelUse.cng')}</option>
-                    </Form.Select>
-                  </Form.Group>
-                </Col>
-                <Col lg={3} md={6}>
-                  <Form.Group>
-                    <Form.Label className="fw-semibold">
-                      <i className="bx bx-car me-1 text-primary"></i>{t('fuelPurchase.vehicleNumber')}
-                    </Form.Label>
-                    <InputGroup size="lg">
-                      <InputGroup.Text><i className="bx bx-search"></i></InputGroup.Text>
-                      <Form.Control
-                        type="text"
-                        placeholder={t('fuelPurchase.searchVehicle')}
-                        value={filters.vehicleNumber}
-                        onChange={(e) => setFilters(prev => ({ ...prev, vehicleNumber: e.target.value }))}
-                      />
-                    </InputGroup>
-                  </Form.Group>
-                </Col>
-              </Row>
-              
-              {/* Clear Filters Button */}
-              <Row className="mt-3">
-                <Col>
-                  <Button 
-                    variant="outline-secondary" 
-                    onClick={() => setFilters({ dateFrom: '', dateTo: '', fuelType: 'all', vehicleNumber: '' })}
-                    className="d-flex align-items-center gap-2"
-                  >
-                    <i className="bx bx-refresh"></i>
-                    {t('fuelPurchase.clearFilters')}
-                  </Button>
-                </Col>
-              </Row>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+        <div className="flex items-center gap-2 mb-4 text-slate-800 font-semibold border-b border-slate-100 pb-3">
+          <i className="bx bx-filter text-xl text-emerald-600"></i>
+          {t('fuelPurchase.filtersSearch')}
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium text-slate-600 flex items-center gap-2">
+              <i className="bx bx-calendar text-emerald-500"></i>
+              {t('fuelPurchase.fromDate')}
+            </label>
+            <input
+              type="date"
+              value={filters.dateFrom}
+              onChange={(e) => setFilters(prev => ({ ...prev, dateFrom: e.target.value }))}
+              className="w-full px-4 h-12 bg-slate-50 border border-slate-200 rounded-lg text-base text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+              style={{ color: '#1e293b', colorScheme: 'light' }}
+            />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium text-slate-600 flex items-center gap-2">
+              <i className="bx bx-calendar text-emerald-500"></i>
+              {t('fuelPurchase.toDate')}
+            </label>
+            <input
+              type="date"
+              value={filters.dateTo}
+              onChange={(e) => setFilters(prev => ({ ...prev, dateTo: e.target.value }))}
+              className="w-full px-4 h-12 bg-slate-50 border border-slate-200 rounded-lg text-base text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+              style={{ color: '#1e293b', colorScheme: 'light' }}
+            />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium text-slate-600 flex items-center gap-2">
+              <i className="bx bx-gas-pump text-emerald-500"></i>
+              {t('fuelPurchase.fuelType')}
+            </label>
+            <select
+              value={filters.fuelType}
+              onChange={(e) => setFilters(prev => ({ ...prev, fuelType: e.target.value }))}
+              className="w-full px-4 h-12 bg-slate-50 border border-slate-200 rounded-lg text-base text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+              style={{ color: '#1e293b' }}
+            >
+              <option value="all">{t('fuelPurchase.allTypes')}</option>
+              <option value="petrol">{t('fuelUse.petrol')}</option>
+              <option value="diesel">{t('fuelUse.diesel')}</option>
+              <option value="cng">{t('fuelUse.cng')}</option>
+            </select>
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium text-slate-600 flex items-center gap-2">
+              <i className="bx bx-car text-emerald-500"></i>
+              {t('fuelPurchase.vehicleNumber')}
+            </label>
+            <div className="relative">
+              <i className="bx bx-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+              <input
+                type="text"
+                placeholder={t('fuelPurchase.searchVehicle')}
+                value={filters.vehicleNumber}
+                onChange={(e) => setFilters(prev => ({ ...prev, vehicleNumber: e.target.value }))}
+                className="w-full pl-10 pr-4 h-12 bg-slate-50 border border-slate-200 rounded-lg text-base text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                style={{ color: '#1e293b' }}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Clear Filters Button */}
+        <div className="mt-4 flex justify-end">
+          <button
+            onClick={() => setFilters({ dateFrom: '', dateTo: '', fuelType: 'all', vehicleNumber: '' })}
+            className="text-slate-500 hover:text-slate-700 text-sm font-medium flex items-center gap-1 transition-colors"
+          >
+            <i className="bx bx-refresh text-lg"></i>
+            {t('fuelPurchase.clearFilters')}
+          </button>
+        </div>
+      </div>
 
       {/* Data Table */}
-      <Row>
-        <Col>
-          <Card className="shadow-sm">
-            <Card.Header className="bg-light">
-              <div className="d-flex justify-content-between align-items-center">
-                <h6 className="mb-0"><i className="bx bx-table me-2"></i>{t('fuelPurchase.purchaseRecords')} ({filteredData.length})</h6>
-                <div className="d-flex gap-2">
-                  <Button variant="outline-primary" size="sm" onClick={handleExport}>
-                    <i className="bx bx-export me-1"></i>{t('common.export')}
-                  </Button>
-                </div>
-              </div>
-            </Card.Header>
-            <Card.Body className="p-0">
-              <div className="table-responsive">
-                <Table hover className="mb-0" style={{ minWidth: '900px' }}>
-                  <thead className="table-dark">
-                    <tr>
-                      <th style={{ width: '90px' }}><i className="bx bx-calendar me-1"></i>{t('fuelPurchase.date')}</th>
-                      <th style={{ width: '110px' }}><i className="bx bx-car me-1"></i>{t('fuelPurchase.vehicle')}</th>
-                      <th style={{ width: '80px' }}><i className="bx bx-gas-pump me-1"></i>{t('fuelPurchase.fuel')}</th>
-                      <th style={{ width: '70px' }}><i className="bx bx-droplet me-1"></i>{t('fuelPurchase.qty')}</th>
-                      <th style={{ width: '80px' }}><i className="bx bx-rupee me-1"></i>{t('fuelPurchase.pricePerL')}</th>
-                      <th style={{ width: '90px' }}><i className="bx bx-calculator me-1"></i>{t('fuelPurchase.total')}</th>
-                      <th style={{ width: '120px' }}><i className="bx bx-store me-1"></i>{t('fuelPurchase.pump')}</th>
-                      <th style={{ width: '90px' }}><i className="bx bx-receipt me-1"></i>{t('fuelPurchase.billNo')}</th>
-                      <th style={{ width: '80px' }}><i className="bx bx-check-circle me-1"></i>{t('fuelPurchase.status')}</th>
-                      <th style={{ width: '80px' }}><i className="bx bx-cog me-1"></i>{t('common.actions')}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredData.map(item => (
-                      <tr key={item.id} className="align-middle">
-                        <td>
-                          <small>{new Date(item.date).toLocaleDateString('en-IN', { 
-                            day: '2-digit', 
-                            month: 'short'
-                          })}</small>
-                        </td>
-                        <td>
-                          <strong className="text-primary" style={{ fontSize: '0.85rem' }}>
-                            {item.vehicleNumber}
-                          </strong>
-                        </td>
-                        <td>
-                          <Badge 
-                            bg={item.fuelType === 'Diesel' ? 'warning' : item.fuelType === 'Petrol' ? 'danger' : 'info'}
-                            className="px-2 py-1"
-                            style={{ fontSize: '0.7rem' }}
-                          >
-                            {item.fuelType}
-                          </Badge>
-                        </td>
-                        <td>
-                          <span className="fw-semibold">{item.quantity}</span>
-                          <small className="text-muted">L</small>
-                        </td>
-                        <td>
-                          <small className="fw-semibold">₹{item.pricePerLiter}</small>
-                        </td>
-                        <td>
-                          <small className="fw-bold text-success">₹{(item.totalAmount/1000).toFixed(1)}k</small>
-                        </td>
-                        <td>
-                          <small className="text-truncate" style={{ maxWidth: '100px', display: 'block' }}>
-                            {item.pumpName}
-                          </small>
-                        </td>
-                        <td>
-                          <code className="bg-light px-1 py-1 rounded" style={{ fontSize: '0.7rem' }}>
-                            {item.billNumber}
-                          </code>
-                        </td>
-                        <td>{getStatusBadge(item.status)}</td>
-                        <td>
-                          <div className="d-flex gap-1">
-                            <Button 
-                              size="sm" 
-                              variant="outline-info"
-                              title="View Details"
-                              style={{ padding: '0.25rem 0.4rem' }}
-                              onClick={() => handleViewPurchase(item)}
-                            >
-                              <i className="bx bx-show" style={{ fontSize: '0.8rem' }}></i>
-                            </Button>
-                            <Button 
-                              size="sm" 
-                              variant="outline-primary"
-                              title="Edit"
-                              style={{ padding: '0.25rem 0.4rem' }}
-                              onClick={() => handleEditPurchase(item)}
-                            >
-                              <i className="bx bx-edit-alt" style={{ fontSize: '0.8rem' }}></i>
-                            </Button>
-                            <Button 
-                              size="sm" 
-                              variant="outline-danger"
-                              title="Delete"
-                              style={{ padding: '0.25rem 0.4rem' }}
-                              onClick={() => handleDeletePurchase(item.id)}
-                            >
-                              <i className="bx bx-trash" style={{ fontSize: '0.8rem' }}></i>
-                            </Button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </Table>
-              </div>
-              
-              {filteredData.length === 0 && (
-                <div className="text-center py-5">
-                  <div className="mb-3">
-                    <i className="bx bx-gas-pump" style={{ fontSize: '4rem', color: '#6c757d' }}></i>
-                  </div>
-                  <h5 className="text-muted">No Fuel Purchase Records Found</h5>
-                  <p className="text-muted mb-3">No records match your current filter criteria.</p>
-                  <Button 
-                    variant="primary" 
-                    onClick={() => setShowAddModal(true)}
-                    className="d-flex align-items-center gap-2 mx-auto"
-                  >
-                    <i className="bx bx-plus"></i>
-                    Add First Purchase Record
-                  </Button>
-                </div>
-              )}
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+        <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+          <h6 className="font-semibold text-slate-800 flex items-center gap-2">
+            <i className="bx bx-table text-emerald-600"></i>
+            {t('fuelPurchase.purchaseRecords')}
+            <span className="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full text-xs">
+              {filteredData.length}
+            </span>
+          </h6>
+          <button
+            onClick={handleExport}
+            className="text-emerald-600 hover:bg-emerald-50 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 border border-emerald-200 hover:border-emerald-300"
+          >
+            <i className="bx bx-export"></i>
+            {t('common.export')}
+          </button>
+        </div>
+
+        <div className="overflow-x-auto scrollbar-white">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-slate-50 border-b border-slate-100 text-sm uppercase text-slate-700 font-semibold tracking-wider">
+                <th className="px-6 py-4"><i className="bx bx-calendar me-1"></i>{t('fuelPurchase.date')}</th>
+                <th className="px-6 py-4"><i className="bx bx-car me-1"></i>{t('fuelPurchase.vehicle')}</th>
+                <th className="px-6 py-4"><i className="bx bx-gas-pump me-1"></i>{t('fuelPurchase.fuel')}</th>
+                <th className="px-6 py-4"><i className="bx bx-droplet me-1"></i>{t('fuelPurchase.qty')}</th>
+                <th className="px-6 py-4"><i className="bx bx-rupee me-1"></i>{t('fuelPurchase.pricePerL')}</th>
+                <th className="px-6 py-4"><i className="bx bx-calculator me-1"></i>{t('fuelPurchase.total')}</th>
+                <th className="px-6 py-4"><i className="bx bx-store me-1"></i>{t('fuelPurchase.pump')}</th>
+                <th className="px-6 py-4"><i className="bx bx-receipt me-1"></i>{t('fuelPurchase.billNo')}</th>
+                <th className="px-6 py-4"><i className="bx bx-check-circle me-1"></i>{t('fuelPurchase.status')}</th>
+                <th className="px-6 py-4 text-right">{t('common.actions')}</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-50">
+              {filteredData.map(item => (
+                <tr key={item.id} className="hover:bg-slate-50/50 transition-colors">
+                  <td className="px-6 py-4 text-base text-slate-700">
+                    {new Date(item.date).toLocaleDateString('en-IN', {
+                      day: '2-digit',
+                      month: 'short'
+                    })}
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className="font-medium text-slate-800 bg-slate-100 px-2 py-1 rounded text-base">
+                      {item.vehicleNumber}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border ${item.fuelType === 'Diesel' ? 'bg-amber-50 text-amber-700 border-amber-100' :
+                      item.fuelType === 'Petrol' ? 'bg-red-50 text-red-700 border-red-100' :
+                        'bg-blue-50 text-blue-700 border-blue-100'
+                      }`}>
+                      {item.fuelType}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-base text-slate-700">
+                    <span className="font-semibold">{item.quantity}</span> L
+                  </td>
+                  <td className="px-6 py-4 text-base text-slate-700">
+                    ₹{item.pricePerLiter}
+                  </td>
+                  <td className="px-6 py-4 text-base font-semibold text-emerald-600">
+                    ₹{(item.totalAmount / 1000).toFixed(1)}k
+                  </td>
+                  <td className="px-6 py-4 text-base text-slate-700 max-w-[150px] truncate">
+                    {item.pumpName}
+                  </td>
+                  <td className="px-6 py-4">
+                    <code className="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded border border-slate-200">
+                      {item.billNumber}
+                    </code>
+                  </td>
+                  <td className="px-6 py-4">
+                    {getStatusBadge(item.status)}
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    <div className="flex justify-end gap-2">
+                      <button
+                        onClick={() => handleViewPurchase(item)}
+                        className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-all"
+                        title="View Details"
+                      >
+                        <i className="bx bx-show text-lg"></i>
+                      </button>
+                      <button
+                        onClick={() => handleEditPurchase(item)}
+                        className="p-1.5 rounded-lg text-slate-400 hover:text-amber-600 hover:bg-amber-50 transition-all"
+                        title="Edit"
+                      >
+                        <i className="bx bx-edit-alt text-lg"></i>
+                      </button>
+                      <button
+                        onClick={() => handleDeletePurchase(item.id)}
+                        className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-all"
+                        title="Delete"
+                      >
+                        <i className="bx bx-trash text-lg"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {filteredData.length === 0 && (
+          <div className="text-center py-12">
+            <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
+              <i className="bx bx-gas-pump text-3xl text-slate-300"></i>
+            </div>
+            <h5 className="text-slate-600 font-medium mb-1">No Fuel Purchase Records Found</h5>
+            <p className="text-slate-400 text-sm mb-4">No records match your current filter criteria.</p>
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="text-emerald-600 hover:text-emerald-700 font-medium text-sm flex items-center gap-1 mx-auto transition-colors"
+            >
+              <i className="bx bx-plus"></i>
+              Add First Purchase Record
+            </button>
+          </div>
+        )}
+      </div>
       {/* Add Purchase Modal */}
-      <Modal show={showAddModal} onHide={() => {
-        setShowAddModal(false);
-        setShowCustomPumpInput(false);
-        setCustomPumpName('');
-      }} size="lg" centered>
-        <Modal.Header closeButton className="bg-primary text-white">
-          <Modal.Title className="d-flex align-items-center gap-2">
-            <i className="bx bx-gas-pump"></i>
-            {t('fuelPurchase.addNewFuelPurchase')}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Row>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label className="fw-semibold">
-                    <i className="bx bx-calendar me-1 text-primary"></i>{t('fuelPurchase.date')} *
-                  </Form.Label>
-                  <Form.Control
+      {showAddModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+              <h3 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+                <i className="bx bx-gas-pump text-emerald-600"></i>
+                {t('fuelPurchase.addNewFuelPurchase')}
+              </h3>
+              <button
+                onClick={() => {
+                  setShowAddModal(false);
+                  setShowCustomPumpInput(false);
+                  setCustomPumpName('');
+                }}
+                className="text-slate-400 hover:text-slate-600 transition-colors"
+              >
+                <i className="bx bx-x text-2xl"></i>
+              </button>
+            </div>
+
+            <div className="p-6 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
+                    <i className="bx bx-calendar text-emerald-500"></i>
+                    {t('fuelPurchase.date')} *
+                  </label>
+                  <input
                     type="date"
                     value={newPurchase.date}
                     onChange={(e) => setNewPurchase(prev => ({ ...prev, date: e.target.value }))}
-                    size="lg"
+                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                   />
-                </Form.Group>
-              </Col>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label className="fw-semibold">
-                    <i className="bx bx-car me-1 text-primary"></i>{t('fuelPurchase.vehicleNumber')} *
-                  </Form.Label>
-                  <Form.Control
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
+                    <i className="bx bx-car text-emerald-500"></i>
+                    {t('fuelPurchase.vehicleNumber')} *
+                  </label>
+                  <input
                     type="text"
                     placeholder="e.g., MH12AB1234"
                     value={newPurchase.vehicleNumber}
                     onChange={(e) => setNewPurchase(prev => ({ ...prev, vehicleNumber: e.target.value }))}
-                    size="lg"
+                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                   />
-                </Form.Group>
-              </Col>
-            </Row>
-            <Row>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label className="fw-semibold">
-                    <i className="bx bx-gas-pump me-1 text-primary"></i>{t('fuelPurchase.fuelType')} *
-                  </Form.Label>
-                  <Form.Select
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
+                    <i className="bx bx-gas-pump text-emerald-500"></i>
+                    {t('fuelPurchase.fuelType')} *
+                  </label>
+                  <select
                     value={newPurchase.fuelType}
                     onChange={(e) => setNewPurchase(prev => ({ ...prev, fuelType: e.target.value }))}
-                    size="lg"
+                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                   >
                     <option value="Petrol">{t('fuelUse.petrol')}</option>
                     <option value="Diesel">{t('fuelUse.diesel')}</option>
                     <option value="CNG">{t('fuelUse.cng')}</option>
-                  </Form.Select>
-                </Form.Group>
-              </Col>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label className="fw-semibold">
-                    <i className="bx bx-droplet me-1 text-primary"></i>{t('fuelUse.quantityLiters')} *
-                  </Form.Label>
-                  <Form.Control
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
+                    <i className="bx bx-droplet text-emerald-500"></i>
+                    {t('fuelUse.quantityLiters')} *
+                  </label>
+                  <input
                     type="number"
                     placeholder={t('fuelPurchase.enterQuantity')}
                     value={newPurchase.quantity}
                     onChange={(e) => setNewPurchase(prev => ({ ...prev, quantity: e.target.value }))}
-                    size="lg"
+                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                   />
-                </Form.Group>
-              </Col>
-            </Row>
-            <Row>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label className="fw-semibold">
-                    <i className="bx bx-rupee me-1 text-primary"></i>{t('fuelPurchase.pricePerLiter')} *
-                  </Form.Label>
-                  <InputGroup size="lg">
-                    <InputGroup.Text>₹</InputGroup.Text>
-                    <Form.Control
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
+                    <i className="bx bx-rupee text-emerald-500"></i>
+                    {t('fuelPurchase.pricePerLiter')} *
+                  </label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">₹</span>
+                    <input
                       type="number"
                       step="0.01"
                       placeholder="0.00"
                       value={newPurchase.pricePerLiter}
                       onChange={(e) => setNewPurchase(prev => ({ ...prev, pricePerLiter: e.target.value }))}
+                      className="w-full pl-8 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                     />
-                  </InputGroup>
-                </Form.Group>
-              </Col>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label className="fw-semibold">
-                    <i className="bx bx-calculator me-1 text-success"></i>{t('fuelPurchase.totalAmount')}
-                  </Form.Label>
-                  <InputGroup size="lg">
-                    <InputGroup.Text>₹</InputGroup.Text>
-                    <Form.Control
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
+                    <i className="bx bx-calculator text-emerald-500"></i>
+                    {t('fuelPurchase.totalAmount')}
+                  </label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">₹</span>
+                    <input
                       type="text"
-                      value={newPurchase.quantity && newPurchase.pricePerLiter ? 
+                      value={newPurchase.quantity && newPurchase.pricePerLiter ?
                         (parseFloat(newPurchase.quantity) * parseFloat(newPurchase.pricePerLiter)).toFixed(2) : '0.00'}
                       readOnly
-                      className="bg-light fw-bold"
+                      className="w-full pl-8 pr-4 py-2 bg-slate-100 border border-slate-200 rounded-lg font-semibold text-slate-700"
                     />
-                  </InputGroup>
-                </Form.Group>
-              </Col>
-            </Row>
-            <Row>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label className="fw-semibold">
-                    <i className="bx bx-store me-1 text-primary"></i>{t('fuelPurchase.pumpName')}
-                  </Form.Label>
-                  <Form.Select
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
+                    <i className="bx bx-store text-emerald-500"></i>
+                    {t('fuelPurchase.pumpName')}
+                  </label>
+                  <select
                     value={showCustomPumpInput ? "Other" : newPurchase.pumpName}
                     onChange={(e) => {
                       if (e.target.value === "Other") {
@@ -637,7 +582,7 @@ const FuelPurchaseHistory = () => {
                         setNewPurchase(prev => ({ ...prev, pumpName: e.target.value }));
                       }
                     }}
-                    size="lg"
+                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                   >
                     <option value="">{t('fuelPurchase.selectPump')}</option>
                     <option value="Indian Oil">Indian Oil (IOCL)</option>
@@ -649,9 +594,9 @@ const FuelPurchaseHistory = () => {
                     <option value="Nayara Energy">Nayara Energy</option>
                     <option value="Jio-bp">Jio-bp</option>
                     <option value="Other">{t('fuelPurchase.otherCustom')}</option>
-                  </Form.Select>
+                  </select>
                   {showCustomPumpInput && (
-                    <Form.Control
+                    <input
                       type="text"
                       placeholder={t('fuelPurchase.enterCustomPumpName')}
                       value={customPumpName}
@@ -659,276 +604,330 @@ const FuelPurchaseHistory = () => {
                         setCustomPumpName(e.target.value);
                         setNewPurchase(prev => ({ ...prev, pumpName: e.target.value }));
                       }}
-                      size="lg"
-                      className="mt-2"
+                      className="w-full mt-2 px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                     />
                   )}
-                </Form.Group>
-              </Col>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label className="fw-semibold">
-                    <i className="bx bx-receipt me-1 text-primary"></i>{t('fuelPurchase.billNumber')}
-                  </Form.Label>
-                  <Form.Control
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
+                    <i className="bx bx-receipt text-emerald-500"></i>
+                    {t('fuelPurchase.billNumber')}
+                  </label>
+                  <input
                     type="text"
                     placeholder={t('fuelPurchase.enterBillNumber')}
                     value={newPurchase.billNumber}
                     onChange={(e) => setNewPurchase(prev => ({ ...prev, billNumber: e.target.value }))}
-                    size="lg"
+                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                   />
-                </Form.Group>
-              </Col>
-            </Row>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer className="bg-light">
-          <Button 
-            variant="outline-secondary" 
-            onClick={() => {
-              setShowAddModal(false);
-              setShowCustomPumpInput(false);
-              setCustomPumpName('');
-            }}
-            className="d-flex align-items-center gap-2"
-            size="lg"
-          >
-            <i className="bx bx-x"></i>
-            {t('common.cancel')}
-          </Button>
-          <Button 
-            variant="primary" 
-            onClick={handleAddPurchase}
-            className="d-flex align-items-center gap-2"
-            size="lg"
-          >
-            <i className="bx bx-plus"></i>
-            {t('fuelPurchase.addPurchase')}
-          </Button>
-        </Modal.Footer>
-      </Modal>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-6 border-t border-slate-100 bg-slate-50/50 flex justify-end gap-3 rounded-b-2xl">
+              <button
+                onClick={() => {
+                  setShowAddModal(false);
+                  setShowCustomPumpInput(false);
+                  setCustomPumpName('');
+                }}
+                className="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium hover:bg-slate-100 rounded-lg transition-colors"
+              >
+                {t('common.cancel')}
+              </button>
+              <button
+                onClick={handleAddPurchase}
+                className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg shadow-sm shadow-emerald-200 transition-all flex items-center gap-2"
+              >
+                <i className="bx bx-plus"></i>
+                {t('fuelPurchase.addPurchase')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* View Purchase Modal */}
-      <Modal show={showViewModal} onHide={() => setShowViewModal(false)} size="lg" centered>
-        <Modal.Header closeButton className="bg-info text-white">
-          <Modal.Title className="d-flex align-items-center gap-2">
-            <i className="bx bx-show"></i>
-            Purchase Details
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {selectedPurchase && (
-            <Row>
-              <Col md={6}>
-                <div className="mb-3">
-                  <strong>Date:</strong>
-                  <p className="mb-1">{selectedPurchase.date}</p>
+      {showViewModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl">
+            <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+              <h3 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+                <i className="bx bx-show text-emerald-600"></i>
+                Purchase Details
+              </h3>
+              <button
+                onClick={() => setShowViewModal(false)}
+                className="text-slate-400 hover:text-slate-600 transition-colors"
+              >
+                <i className="bx bx-x text-2xl"></i>
+              </button>
+            </div>
+
+            <div className="p-6">
+              {selectedPurchase && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Date</label>
+                      <p className="text-slate-800 font-medium mt-1">{selectedPurchase.date}</p>
+                    </div>
+                    <div>
+                      <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Vehicle Number</label>
+                      <p className="text-slate-800 font-medium mt-1">{selectedPurchase.vehicleNumber}</p>
+                    </div>
+                    <div>
+                      <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Fuel Type</label>
+                      <p className="text-slate-800 font-medium mt-1">{selectedPurchase.fuelType}</p>
+                    </div>
+                    <div>
+                      <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Quantity</label>
+                      <p className="text-slate-800 font-medium mt-1">{selectedPurchase.quantity} L</p>
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Price per Liter</label>
+                      <p className="text-slate-800 font-medium mt-1">₹{selectedPurchase.pricePerLiter}</p>
+                    </div>
+                    <div>
+                      <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Amount</label>
+                      <p className="text-emerald-600 font-bold mt-1 text-lg">₹{selectedPurchase.totalAmount}</p>
+                    </div>
+                    <div>
+                      <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Pump Name</label>
+                      <p className="text-slate-800 font-medium mt-1">{selectedPurchase.pumpName}</p>
+                    </div>
+                    <div>
+                      <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Bill Number</label>
+                      <p className="text-slate-800 font-medium mt-1">{selectedPurchase.billNumber}</p>
+                    </div>
+                  </div>
                 </div>
-                <div className="mb-3">
-                  <strong>Vehicle Number:</strong>
-                  <p className="mb-1">{selectedPurchase.vehicleNumber}</p>
-                </div>
-                <div className="mb-3">
-                  <strong>Fuel Type:</strong>
-                  <p className="mb-1">{selectedPurchase.fuelType}</p>
-                </div>
-                <div className="mb-3">
-                  <strong>Quantity:</strong>
-                  <p className="mb-1">{selectedPurchase.quantity} L</p>
-                </div>
-              </Col>
-              <Col md={6}>
-                <div className="mb-3">
-                  <strong>Price per Liter:</strong>
-                  <p className="mb-1">₹{selectedPurchase.pricePerLiter}</p>
-                </div>
-                <div className="mb-3">
-                  <strong>Total Amount:</strong>
-                  <p className="mb-1 text-success fw-bold">₹{selectedPurchase.totalAmount}</p>
-                </div>
-                <div className="mb-3">
-                  <strong>Pump Name:</strong>
-                  <p className="mb-1">{selectedPurchase.pumpName}</p>
-                </div>
-                <div className="mb-3">
-                  <strong>Bill Number:</strong>
-                  <p className="mb-1">{selectedPurchase.billNumber}</p>
-                </div>
-              </Col>
-            </Row>
-          )}
-        </Modal.Body>
-        <Modal.Footer className="bg-light">
-          <Button variant="secondary" onClick={() => setShowViewModal(false)}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
+              )}
+            </div>
+
+            <div className="p-6 border-t border-slate-100 bg-slate-50/50 flex justify-end rounded-b-2xl">
+              <button
+                onClick={() => setShowViewModal(false)}
+                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium rounded-lg transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Edit Purchase Modal */}
-      <Modal show={showEditModal} onHide={() => {
-        setShowEditModal(false);
-        setShowEditCustomPumpInput(false);
-        setEditCustomPumpName('');
-      }} size="lg" centered>
-        <Modal.Header closeButton className="bg-primary text-white">
-          <Modal.Title className="d-flex align-items-center gap-2">
-            <i className="bx bx-edit-alt"></i>
-            Edit Fuel Purchase
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {editingPurchase && (
-            <Form>
-              <Row>
-                <Col md={6}>
-                  <Form.Group className="mb-3">
-                    <Form.Label><i className="bx bx-calendar me-1"></i>Date *</Form.Label>
-                    <Form.Control
-                      type="date"
-                      value={editingPurchase.date}
-                      onChange={(e) => setEditingPurchase({...editingPurchase, date: e.target.value})}
-                      required
-                    />
-                  </Form.Group>
-                </Col>
-                <Col md={6}>
-                  <Form.Group className="mb-3">
-                    <Form.Label><i className="bx bx-car me-1"></i>Vehicle Number *</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="e.g., MH12AB1234"
-                      value={editingPurchase.vehicleNumber}
-                      onChange={(e) => setEditingPurchase({...editingPurchase, vehicleNumber: e.target.value})}
-                      required
-                    />
-                  </Form.Group>
-                </Col>
-              </Row>
-              
-              <Row>
-                <Col md={6}>
-                  <Form.Group className="mb-3">
-                    <Form.Label><i className="bx bx-droplet me-1"></i>{t('fuelPurchase.fuelType')}</Form.Label>
-                    <Form.Select
-                      value={editingPurchase.fuelType}
-                      onChange={(e) => setEditingPurchase({...editingPurchase, fuelType: e.target.value})}
-                    >
-                      <option value="petrol">{t('fuelUse.petrol')}</option>
-                      <option value="diesel">{t('fuelUse.diesel')}</option>
-                      <option value="cng">{t('fuelUse.cng')}</option>
-                    </Form.Select>
-                  </Form.Group>
-                </Col>
-                <Col md={6}>
-                  <Form.Group className="mb-3">
-                    <Form.Label><i className="bx bx-tachometer me-1"></i>Quantity (Liters) *</Form.Label>
-                    <Form.Control
-                      type="number"
-                      step="0.01"
-                      placeholder="e.g., 50.5"
-                      value={editingPurchase.quantity}
-                      onChange={(e) => setEditingPurchase({...editingPurchase, quantity: e.target.value})}
-                      required
-                    />
-                  </Form.Group>
-                </Col>
-              </Row>
-              
-              <Row>
-                <Col md={6}>
-                  <Form.Group className="mb-3">
-                    <Form.Label><i className="bx bx-rupee me-1"></i>Price per Liter *</Form.Label>
-                    <Form.Control
-                      type="number"
-                      step="0.01"
-                      placeholder="e.g., 95.50"
-                      value={editingPurchase.pricePerLiter}
-                      onChange={(e) => setEditingPurchase({...editingPurchase, pricePerLiter: e.target.value})}
-                      required
-                    />
-                  </Form.Group>
-                </Col>
-                <Col md={6}>
-                  <Form.Group className="mb-3">
-                    <Form.Label><i className="bx bx-store me-1"></i>Pump Name</Form.Label>
-                    <Form.Select
-                      value={showEditCustomPumpInput ? "Other" : editingPurchase.pumpName}
-                      onChange={(e) => {
-                        if (e.target.value === "Other") {
-                          setShowEditCustomPumpInput(true);
-                          setEditCustomPumpName(editingPurchase.pumpName || '');
-                          setEditingPurchase({...editingPurchase, pumpName: ''});
-                        } else {
-                          setShowEditCustomPumpInput(false);
-                          setEditCustomPumpName('');
-                          setEditingPurchase({...editingPurchase, pumpName: e.target.value});
-                        }
-                      }}
-                    >
-                      <option value="">Select Pump</option>
-                      <option value="Indian Oil">Indian Oil (IOCL)</option>
-                      <option value="Bharat Petroleum">Bharat Petroleum (BPCL)</option>
-                      <option value="Hindustan Petroleum">Hindustan Petroleum (HPCL)</option>
-                      <option value="Reliance Petroleum">Reliance Petroleum</option>
-                      <option value="Essar Oil">Essar Oil</option>
-                      <option value="Shell India">Shell India</option>
-                      <option value="Nayara Energy">Nayara Energy</option>
-                      <option value="Jio-bp">Jio-bp</option>
-                      <option value="Other">Other (Custom)</option>
-                    </Form.Select>
-                    {showEditCustomPumpInput && (
-                      <Form.Control
-                        type="text"
-                        placeholder="Enter custom pump name"
-                        value={editCustomPumpName}
-                        onChange={(e) => {
-                          setEditCustomPumpName(e.target.value);
-                          setEditingPurchase({...editingPurchase, pumpName: e.target.value});
-                        }}
-                        className="mt-2"
+      {showEditModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+              <h3 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+                <i className="bx bx-edit-alt text-emerald-600"></i>
+                Edit Fuel Purchase
+              </h3>
+              <button
+                onClick={() => {
+                  setShowEditModal(false);
+                  setShowEditCustomPumpInput(false);
+                  setEditCustomPumpName('');
+                }}
+                className="text-slate-400 hover:text-slate-600 transition-colors"
+              >
+                <i className="bx bx-x text-2xl"></i>
+              </button>
+            </div>
+
+            <div className="p-6 space-y-6">
+              {editingPurchase && (
+                <div className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
+                        <i className="bx bx-calendar text-emerald-500"></i>
+                        Date *
+                      </label>
+                      <input
+                        type="date"
+                        value={editingPurchase.date}
+                        onChange={(e) => setEditingPurchase({ ...editingPurchase, date: e.target.value })}
+                        className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                        required
                       />
-                    )}
-                  </Form.Group>
-                </Col>
-              </Row>
-              
-              <Form.Group className="mb-3">
-                <Form.Label><i className="bx bx-receipt me-1"></i>Bill Number</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="e.g., HP001234"
-                  value={editingPurchase.billNumber}
-                  onChange={(e) => setEditingPurchase({...editingPurchase, billNumber: e.target.value})}
-                />
-              </Form.Group>
-            </Form>
-          )}
-        </Modal.Body>
-        <Modal.Footer className="bg-light">
-          <Button 
-            variant="outline-secondary" 
-            onClick={() => {
-              setShowEditModal(false);
-              setShowEditCustomPumpInput(false);
-              setEditCustomPumpName('');
-            }}
-            className="d-flex align-items-center gap-2"
-          >
-            <i className="bx bx-x"></i>
-            Cancel
-          </Button>
-          <Button 
-            variant="primary" 
-            onClick={handleSaveEdit}
-            className="d-flex align-items-center gap-2"
-          >
-            <i className="bx bx-save"></i>
-            Save Changes
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </Container>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
+                        <i className="bx bx-car text-emerald-500"></i>
+                        Vehicle Number *
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g., MH12AB1234"
+                        value={editingPurchase.vehicleNumber}
+                        onChange={(e) => setEditingPurchase({ ...editingPurchase, vehicleNumber: e.target.value })}
+                        className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
+                        <i className="bx bx-gas-pump text-emerald-500"></i>
+                        {t('fuelPurchase.fuelType')} *
+                      </label>
+                      <select
+                        value={editingPurchase.fuelType}
+                        onChange={(e) => setEditingPurchase({ ...editingPurchase, fuelType: e.target.value })}
+                        className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                      >
+                        <option value="Petrol">{t('fuelUse.petrol')}</option>
+                        <option value="Diesel">{t('fuelUse.diesel')}</option>
+                        <option value="CNG">{t('fuelUse.cng')}</option>
+                      </select>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
+                        <i className="bx bx-droplet text-emerald-500"></i>
+                        {t('fuelUse.quantityLiters')} *
+                      </label>
+                      <input
+                        type="number"
+                        placeholder={t('fuelPurchase.enterQuantity')}
+                        value={editingPurchase.quantity}
+                        onChange={(e) => setEditingPurchase({ ...editingPurchase, quantity: e.target.value })}
+                        className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
+                        <i className="bx bx-rupee text-emerald-500"></i>
+                        {t('fuelPurchase.pricePerLiter')} *
+                      </label>
+                      <div className="relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">₹</span>
+                        <input
+                          type="number"
+                          step="0.01"
+                          placeholder="0.00"
+                          value={editingPurchase.pricePerLiter}
+                          onChange={(e) => setEditingPurchase({ ...editingPurchase, pricePerLiter: e.target.value })}
+                          className="w-full pl-8 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
+                        <i className="bx bx-calculator text-emerald-500"></i>
+                        {t('fuelPurchase.totalAmount')}
+                      </label>
+                      <div className="relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">₹</span>
+                        <input
+                          type="text"
+                          value={editingPurchase.quantity && editingPurchase.pricePerLiter ?
+                            (parseFloat(editingPurchase.quantity) * parseFloat(editingPurchase.pricePerLiter)).toFixed(2) : '0.00'}
+                          readOnly
+                          className="w-full pl-8 pr-4 py-2 bg-slate-100 border border-slate-200 rounded-lg font-semibold text-slate-700"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
+                        <i className="bx bx-store text-emerald-500"></i>
+                        {t('fuelPurchase.pumpName')}
+                      </label>
+                      <select
+                        value={showEditCustomPumpInput ? "Other" : editingPurchase.pumpName}
+                        onChange={(e) => {
+                          if (e.target.value === "Other") {
+                            setShowEditCustomPumpInput(true);
+                            setEditCustomPumpName(editingPurchase.pumpName || '');
+                            setEditingPurchase(prev => ({ ...prev, pumpName: '' }));
+                          } else {
+                            setShowEditCustomPumpInput(false);
+                            setEditCustomPumpName('');
+                            setEditingPurchase(prev => ({ ...prev, pumpName: e.target.value }));
+                          }
+                        }}
+                        className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                      >
+                        <option value="">{t('fuelPurchase.selectPump')}</option>
+                        <option value="Indian Oil">Indian Oil (IOCL)</option>
+                        <option value="Bharat Petroleum">Bharat Petroleum (BPCL)</option>
+                        <option value="Hindustan Petroleum">Hindustan Petroleum (HPCL)</option>
+                        <option value="Reliance Petroleum">Reliance Petroleum</option>
+                        <option value="Essar Oil">Essar Oil</option>
+                        <option value="Shell India">Shell India</option>
+                        <option value="Nayara Energy">Nayara Energy</option>
+                        <option value="Jio-bp">Jio-bp</option>
+                        <option value="Other">{t('fuelPurchase.otherCustom')}</option>
+                      </select>
+                      {showEditCustomPumpInput && (
+                        <input
+                          type="text"
+                          placeholder={t('fuelPurchase.enterCustomPumpName')}
+                          value={editCustomPumpName}
+                          onChange={(e) => {
+                            setEditCustomPumpName(e.target.value);
+                            setEditingPurchase(prev => ({ ...prev, pumpName: e.target.value }));
+                          }}
+                          className="w-full mt-2 px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                        />
+                      )}
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
+                        <i className="bx bx-receipt text-emerald-500"></i>
+                        {t('fuelPurchase.billNumber')}
+                      </label>
+                      <input
+                        type="text"
+                        placeholder={t('fuelPurchase.enterBillNumber')}
+                        value={editingPurchase.billNumber}
+                        onChange={(e) => setEditingPurchase({ ...editingPurchase, billNumber: e.target.value })}
+                        className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="p-6 border-t border-slate-100 bg-slate-50/50 flex justify-end gap-3 rounded-b-2xl">
+              <button
+                onClick={() => {
+                  setShowEditModal(false);
+                  setShowEditCustomPumpInput(false);
+                  setEditCustomPumpName('');
+                }}
+                className="px-4 py-2 text-slate-600 hover:text-slate-800 font-medium hover:bg-slate-100 rounded-lg transition-colors"
+              >
+                {t('common.cancel')}
+              </button>
+              <button
+                onClick={handleSaveEdit}
+                className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg shadow-sm shadow-emerald-200 transition-all flex items-center gap-2"
+              >
+                <i className="bx bx-save"></i>
+                Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 
